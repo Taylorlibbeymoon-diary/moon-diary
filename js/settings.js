@@ -13,6 +13,7 @@ const MoonSettings = (() => {
     places: [],          // { id, name, climate, hemisphere, lat, lon }
     currentPlaceId: null,
     weather: { enabled: false },
+    ayurveda: { show: true },
   };
 
   function load() {
@@ -24,6 +25,7 @@ const MoonSettings = (() => {
       ...saved,
       cycle: { ...DEFAULTS.cycle, ...(saved.cycle || {}) },
       weather: { ...DEFAULTS.weather, ...(saved.weather || {}) },
+      ayurveda: { ...DEFAULTS.ayurveda, ...(saved.ayurveda || {}) },
     };
   }
 

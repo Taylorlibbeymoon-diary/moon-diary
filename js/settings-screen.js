@@ -18,6 +18,7 @@ const settingsEls = {
   placeLocated: document.getElementById("place-located"),
   placeClimate: document.getElementById("place-climate"),
   placeHemisphere: document.getElementById("place-hemisphere"),
+  ayurvedaShow: document.getElementById("ayurveda-show"),
   weatherOn: document.getElementById("weather-on"),
   weatherHint: document.getElementById("weather-hint"),
   weatherConsent: document.getElementById("weather-consent"),
@@ -80,6 +81,8 @@ function renderSettings() {
   });
 
   renderPlaceList(settings);
+
+  settingsEls.ayurvedaShow.checked = settings.ayurveda.show;
 
   settingsEls.weatherOn.checked = settings.weather.enabled;
   settingsEls.weatherConsent.hidden = true;
@@ -168,6 +171,13 @@ settingsEls.doshaOptions.addEventListener("click", (event) => {
     s.doshas = s.doshas.filter((d) => d !== option.dataset.dosha);
     if (turningOn) s.doshas.push(option.dataset.dosha);
   });
+  refreshHome();
+});
+
+// ── Ayurveda ──────────────────────────────────────────────
+
+settingsEls.ayurvedaShow.addEventListener("change", () => {
+  MoonSettings.update((s) => { s.ayurveda.show = settingsEls.ayurvedaShow.checked; });
   refreshHome();
 });
 

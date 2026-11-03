@@ -108,6 +108,7 @@ function showView(name) {
   if (name === "record") enterRecord();
   if (name === "garden") renderGarden();
   if (name === "settings") renderSettings();
+  if (name === "today") renderToday();
   if (name === "home") refreshIfCalm();
 }
 
@@ -133,14 +134,41 @@ const placeSwitcher = document.getElementById("place-switcher");
 const weatherLine = document.getElementById("weather-line");
 const cycleLine = document.getElementById("cycle-line");
 
-// Everything that can change with the day, your place, cycle or doshas.
-// Runs when the app opens and whenever you change something.
-function refreshHome() {
+// Everything about right now: time, place, season, cycle, doshas and
+// (if it's on and already fetched today) the weather.
+function currentMoment() {
   const now = new Date();
   const settings = MoonSettings.load();
   const place = MoonSettings.currentPlace(settings);
-  const season = MoonRhythms.seasonFor(place, now);
   const cycle = MoonRhythms.cycleToday(settings.cycle, now);
+  return {
+    now,
+    settings,
+    place,
+    cycle,
+    season: MoonRhythms.seasonFor(place, now),
+    phase: cycle ? cycle.phase : null,
+    doshas: settings.doshas,
+    weather: settings.weather.enabled ? MoonWeather.known(place, todayKey(now)) : null,
+  };
+}
+
+// The gentle ayurvedic invitation at the bottom of the home screen.
+function renderInvitation(moment) {
+  const card = document.getElementById("invitation-card");
+  const invitation = moment.settings.ayurveda.show && MoonAyurveda.invitationFor(moment, todayKey(moment.now));
+  card.hidden = !invitation;
+  if (!invitation) return;
+  document.getElementById("invitation-why").textContent = `An invitation ${invitation.why}`;
+  document.getElementById("invitation-text").textContent = invitation.text;
+}
+
+// Everything that can change with the day, your place, cycle or doshas.
+// Runs when the app opens and whenever you change something.
+function refreshHome() {
+  const moment = currentMoment();
+  const { now, settings, place, season, cycle } = moment;
+  renderInvitation(moment);
 
   document.getElementById("today-date").textContent = now.toLocaleDateString(undefined, {
     weekday: "long", month: "long", day: "numeric",
@@ -643,7 +671,7 @@ async function renderGarden() {
 
 // Which version this is, shown quietly at the bottom of the garden.
 // Keep it the same as the number in sw.js.
-const APP_VERSION = 6;
+const APP_VERSION = 7;
 document.getElementById("app-version").textContent = APP_VERSION;
 
 let updateWaiting = false;

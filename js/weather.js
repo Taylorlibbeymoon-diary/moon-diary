@@ -67,9 +67,29 @@ const MoonWeather = (() => {
     return words.filter(Boolean).join(" · ");
   }
 
+  // Today's weather if it's already been fetched, without asking the internet.
+  function known(place, dayKey) {
+    const cached = readCache();
+    return place && cached && cached.placeId === place.id && cached.dayKey === dayKey ? cached.data : null;
+  }
+
+  // The weather's qualities, for the ayurvedic notes: hot, cold, humid…
+  function qualities(weather) {
+    if (!weather) return [];
+    const found = [];
+    if (weather.temp >= 30) found.push("hot");
+    if (weather.temp <= 5) found.push("cold");
+    if (weather.humidity >= 75) found.push("humid");
+    if (weather.humidity <= 35) found.push("dryair");
+    if (weather.wind >= 25) found.push("windy");
+    const code = weather.code;
+    if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95) found.push("rain");
+    return found;
+  }
+
   function forget() {
     try { localStorage.removeItem(KEY); } catch (e) {}
   }
 
-  return { today, describe, forget };
+  return { today, known, describe, qualities, forget };
 })();
