@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- viewport-fit=cover lets the cream background reach behind the iPhone notch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Moon Diary</title>
+  <meta name="description" content="A gentle, private video and voice journal.">
+
+  <!-- Colours for the phone's status bar and browser chrome -->
+  <meta name="theme-color" content="#faf6ef">
+
+  <!-- Make it feel like a real app when added to the iPhone home screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Moon Diary">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Hand-drawn style sprig, top corner (purely decorative) -->
+  <svg class="sprig sprig-top" viewBox="0 0 200 200" aria-hidden="true">
+    <path class="stem" d="M196 6 C160 30 132 52 110 84 C94 108 84 134 78 168"/>
+    <path class="leaf" d="M150 38 C138 22 120 18 104 22 C116 36 132 42 150 38 Z"/>
+    <path class="leaf" d="M150 38 C160 22 176 16 190 18 C182 32 168 40 150 38 Z"/>
+    <path class="leaf" d="M122 70 C106 60 88 60 74 68 C88 80 106 80 122 70 Z"/>
+    <path class="leaf" d="M122 70 C126 52 138 40 152 36 C150 52 140 64 122 70 Z"/>
+    <path class="leaf" d="M98 112 C82 106 66 110 54 120 C70 128 86 126 98 112 Z"/>
+    <path class="leaf" d="M98 112 C100 94 110 82 124 76 C124 92 114 104 98 112 Z"/>
+    <path class="vein" d="M150 38 C138 32 124 28 110 24 M122 70 C108 68 94 68 80 68 M98 112 C86 114 72 116 60 120"/>
+    <circle class="bloom" cx="80" cy="166" r="5"/>
+    <circle class="bloom" cx="70" cy="158" r="3"/>
+  </svg>
+
+  <main class="home">
+    <header class="greeting fade-in">
+      <!-- Little crescent moon -->
+      <svg class="moon" viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M26 6 A15 15 0 1 0 34 30 A12 12 0 1 1 26 6 Z"/>
+      </svg>
+      <p class="date" id="today-date"></p>
+      <h1 id="greeting">Hello, love</h1>
+      <p class="season" id="season-line"></p>
+    </header>
+
+    <section class="prompt-card fade-in delay-1" aria-live="polite">
+      <p class="eyebrow">A soft question for today</p>
+      <p class="prompt-text" id="prompt-text"></p>
+      <button class="link-button" id="another-prompt" type="button">another question</button>
+    </section>
+
+    <section class="begin fade-in delay-2">
+      <button class="begin-button" id="begin" type="button">
+        <span>Begin</span>
+      </button>
+      <p class="whisper">Only if you'd like to. There's nothing you need to do today.</p>
+    </section>
+  </main>
+
+  <!-- A small, gentle message that floats up and fades away -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Hand-drawn style sprig, bottom corner -->
+  <svg class="sprig sprig-bottom" viewBox="0 0 200 200" aria-hidden="true">
+    <path class="stem" d="M4 196 C40 172 70 150 92 118 C106 96 114 72 118 40"/>
+    <path class="leaf" d="M48 166 C40 148 26 140 10 140 C18 156 32 166 48 166 Z"/>
+    <path class="leaf" d="M76 136 C78 116 90 104 106 100 C104 118 92 130 76 136 Z"/>
+    <path class="leaf" d="M76 136 C62 124 46 122 32 126 C44 140 60 142 76 136 Z"/>
+    <path class="leaf" d="M104 86 C112 70 126 62 140 62 C134 78 120 86 104 86 Z"/>
+    <path class="vein" d="M48 166 C36 158 24 150 14 142 M76 136 C62 132 48 128 36 126"/>
+    <circle class="bloom" cx="118" cy="38" r="6"/>
+    <circle class="bloom soft" cx="108" cy="30" r="3.5"/>
+  </svg>
+
+  <!-- Your prompts first, then the app that uses them -->
+  <script src="content/prompts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
