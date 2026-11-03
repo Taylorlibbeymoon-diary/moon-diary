@@ -276,6 +276,7 @@ button:focus-visible {
 .letters-view,
 .consent-view,
 .letter-view,
+.keepsake-view,
 .garden-view {
   position: relative;
   z-index: 1;
@@ -724,6 +725,34 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   white-space: pre-wrap;
 }
 .letter-footer { text-align: center; font-style: italic; }
+
+/* ── Keepsakes and reminder ────────────────────────────── */
+
+.keepsake-view { padding-top: 20px; }
+.keepsake-status { text-align: center; }
+.keepsake-hint { text-align: center; }
+.keepsake-nudge .rhythm-line { text-align: center; }
+.keepsake-nudge .review-actions { margin-bottom: 8px; }
+
+.file-label { display: inline-block; cursor: pointer; }
+
+/* Hidden from sight, but still tappable through its label */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.steps {
+  margin: 4px 0 0;
+  padding-left: 22px;
+  font-size: 16px;
+}
+.steps li { margin-bottom: 8px; }
+.steps strong { font-weight: 600; }
 
 /* ── Your rhythms (settings) ───────────────────────────── */
 

@@ -276,6 +276,38 @@
         </div>
       </div>
     </section>
+
+    <section class="settings-card" aria-labelledby="reminder-heading">
+      <h3 class="checkin-label" id="reminder-heading">A gentle reminder</h3>
+      <p class="hint first">iPhone's own Shortcuts app can show one soft notification a day, at a time you choose. It stays completely private, with nothing sent anywhere.</p>
+      <label class="field">
+        <span>Your reminder words</span>
+        <input type="text" id="reminder-words">
+      </label>
+      <button class="link-button flush" id="reminder-copy" type="button">copy these words</button>
+      <details class="add-place">
+        <summary>how to set it up</summary>
+        <ol class="steps">
+          <li>Copy your reminder words above.</li>
+          <li>Open the <strong>Shortcuts</strong> app and tap <strong>Automation</strong> at the bottom, then <strong>+</strong> (or <strong>New Automation</strong>).</li>
+          <li>Choose <strong>Time of Day</strong>. Pick your time, choose <strong>Daily</strong>, then <strong>Run Immediately</strong>, and switch off <strong>Notify When Run</strong>. Tap <strong>Next</strong>.</li>
+          <li>Tap <strong>New Blank Automation</strong>, then <strong>Add Action</strong>, search for <strong>Show Notification</strong>, and tap it.</li>
+          <li>Tap the words “Hello World” and paste yours. Tap the small arrow if you'd like to switch off the sound. Tap <strong>Done</strong>.</li>
+        </ol>
+        <p class="hint">To pause it any time, open Shortcuts → Automation, tap it, and switch it off. When the reminder arrives, just tap your moon icon. There's never anything you need to do.</p>
+      </details>
+    </section>
+
+    <section class="settings-card" aria-labelledby="safe-heading">
+      <h3 class="checkin-label" id="safe-heading">Keep your diary safe</h3>
+      <p class="hint first">Your diary lives only on this phone. A keepsake is one file you can save to Files or iCloud Drive, and bring back here any time. Your garden will also offer, quietly and once a month, to tuck the month away.</p>
+      <button class="soft-button small" id="keepsake-everything" type="button">save everything</button>
+      <p class="hint" id="keepsake-last"></p>
+      <label class="link-button flush file-label">
+        bring back a keepsake
+        <input type="file" id="keepsake-file" class="visually-hidden" accept=".zip,application/zip">
+      </label>
+    </section>
   </section>
 
   <!-- ── Your letters (written with Claude, only when you choose) ── -->
@@ -324,6 +356,20 @@
     <article class="letter-paper" id="letter-text"></article>
     <p class="hint letter-footer" id="letter-footer"></p>
     <p class="garden-filter-row"><button class="link-button" id="letter-remove" type="button">let this letter go</button></p>
+  </section>
+
+  <!-- ── Keepsakes (save or bring back) ───────────────── -->
+  <section class="view keepsake-view" id="view-keepsake" aria-label="Keepsake">
+    <header class="view-header">
+      <button class="link-button" id="keepsake-back" type="button">back</button>
+    </header>
+    <h2 class="view-title" id="keepsake-title">Keepsake</h2>
+    <p class="rhythm-line keepsake-status" id="keepsake-status" aria-live="polite"></p>
+    <div class="review-actions">
+      <button class="soft-button" id="keepsake-save" type="button" hidden>Save keepsake</button>
+      <button class="soft-button" id="keepsake-bring" type="button" hidden>Bring them home</button>
+    </div>
+    <p class="hint keepsake-hint" id="keepsake-hint"></p>
   </section>
 
   <!-- ── Garden (a simple list for now; the full garden is Phase 5) ── -->
@@ -376,10 +422,12 @@
   <script src="js/ayurveda.js"></script>
   <script src="js/learning.js"></script>
   <script src="js/claude.js"></script>
+  <script src="js/zip.js"></script>
   <script src="js/app.js"></script>
   <script src="js/settings-screen.js"></script>
   <script src="js/today-screen.js"></script>
   <script src="js/garden.js"></script>
   <script src="js/letters.js"></script>
+  <script src="js/keepsake.js"></script>
 </body>
 </html>

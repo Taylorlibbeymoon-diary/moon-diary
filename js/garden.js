@@ -234,6 +234,13 @@ function renderMonth(entries, settings) {
   } else {
     gardenBody.appendChild(makeEntryList(inMonth, settings));
   }
+
+  const keep = makeEl("button", "link-button", "save this month as a keepsake");
+  keep.type = "button";
+  keep.addEventListener("click", () => prepareKeepsake({ kind: "month", month }));
+  const keepRow = makeEl("p", "garden-filter-row");
+  keepRow.appendChild(keep);
+  gardenBody.appendChild(keepRow);
 }
 
 // ── By cycle phase ────────────────────────────────────────
@@ -364,6 +371,7 @@ async function renderGarden() {
   });
 
   gardenBody.innerHTML = "";
+  renderKeepsakeNudge(entries);
   renderNoticings(entries, settings);
   if (gardenState.mode === "phase") renderPhase(entries, settings);
   else if (gardenState.mode === "mood") renderMood(entries, settings);

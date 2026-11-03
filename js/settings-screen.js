@@ -89,6 +89,8 @@ function renderSettings() {
   settingsEls.learnPatterns.checked = settings.learning.patterns;
 
   renderClaudeKey();
+  renderKeepsakeSettings();
+  reminderWords.value = recall("moon.reminderWords") || DEFAULT_REMINDER_WORDS;
 
   settingsEls.weatherOn.checked = settings.weather.enabled;
   settingsEls.weatherConsent.hidden = true;
@@ -244,6 +246,25 @@ claudeKeyRemove.addEventListener("click", () => {
   }
   MoonClaude.forgetKey();
   renderClaudeKey();
+});
+
+// ── A gentle reminder (set up in iPhone's Shortcuts app) ──
+
+const DEFAULT_REMINDER_WORDS = "A soft moment for Moon Diary, only if you'd like.";
+const reminderWords = document.getElementById("reminder-words");
+
+reminderWords.addEventListener("change", () => {
+  remember("moon.reminderWords", reminderWords.value.trim() || DEFAULT_REMINDER_WORDS);
+});
+
+document.getElementById("reminder-copy").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(reminderWords.value.trim() || DEFAULT_REMINDER_WORDS);
+    showToast("Copied. Now paste them into Shortcuts.");
+  } catch (error) {
+    reminderWords.select();
+    showToast("Press and hold the words to copy them.");
+  }
 });
 
 // ── Adding a place ────────────────────────────────────────

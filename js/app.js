@@ -627,7 +627,7 @@ document.getElementById("checkin-done").addEventListener("click", async () => {
 
 // Which version this is, shown quietly at the bottom of the garden.
 // Keep it the same as the number in sw.js.
-const APP_VERSION = 10;
+const APP_VERSION = 11;
 document.getElementById("app-version").textContent = APP_VERSION;
 
 let updateWaiting = false;
