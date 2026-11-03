@@ -62,9 +62,14 @@ function promptWeight(prompt, today) {
 
 function promptsForToday(today) {
   const all = window.MOON_PROMPTS || [];
+  // If you've switched on "questions adapt to me", gently lean toward
+  // questions you answer and away from ones you often pass over.
+  const learned = MoonSettings.load().learning.adaptPrompts ? MoonLearning.known() : null;
   const weighted = [];
   for (const prompt of all) {
-    for (let i = 0; i < promptWeight(prompt, today); i++) weighted.push(prompt);
+    let weight = promptWeight(prompt, today) * 2;
+    if (weight && learned) weight = Math.max(1, Math.round(weight * MoonLearning.promptMultiplier(prompt.text, learned)));
+    for (let i = 0; i < weight; i++) weighted.push(prompt);
   }
   return weighted.length ? weighted : all;
 }
@@ -247,6 +252,7 @@ document.getElementById("another-prompt").addEventListener("click", () => {
   // Move along until the words actually change (a question can appear
   // more than once in the list when it suits today especially well).
   const before = currentPrompt;
+  if (MoonSettings.load().learning.adaptPrompts) MoonLearning.recordSkip(before);
   for (let i = 0; i < homePrompts.length && currentPrompt === before; i++) {
     homeOffset += 1;
     currentPrompt = pickPrompt(homePrompts, homeKey, homeOffset);
@@ -482,6 +488,7 @@ keepButton.addEventListener("click", async () => {
   try {
     await MoonDB.saveEntry(entry, pending.blob);
     MoonDB.askToKeepStorage();
+    if (MoonSettings.load().learning.adaptPrompts) MoonLearning.recordAnswer(entry.prompt);
     // The recording is already safe; the check-in is a gentle extra.
     openCheckin(entry, "home");
   } catch (error) {
@@ -619,7 +626,7 @@ document.getElementById("checkin-done").addEventListener("click", async () => {
 
 // Which version this is, shown quietly at the bottom of the garden.
 // Keep it the same as the number in sw.js.
-const APP_VERSION = 8;
+const APP_VERSION = 9;
 document.getElementById("app-version").textContent = APP_VERSION;
 
 let updateWaiting = false;

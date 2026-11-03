@@ -313,6 +313,18 @@ function renderMood(entries, settings) {
   gardenBody.appendChild(makeEntryList(entries.filter((entry) => entryMoods(entry).includes(gardenState.mood)), settings));
 }
 
+// ── Gentle noticings (only if you've switched them on) ────
+
+function renderNoticings(entries, settings) {
+  if (!settings.learning.patterns) return;
+  const patterns = MoonLearning.noticePatterns(entries, settings);
+  const card = makeEl("section", "noticings");
+  card.appendChild(makeEl("p", "eyebrow", "Gentle noticings"));
+  if (patterns.length) card.appendChild(makeList(patterns));
+  else card.appendChild(makeEl("p", "hint", "As your garden grows, gentle patterns will appear here."));
+  gardenBody.appendChild(card);
+}
+
 // ── Putting the garden together ───────────────────────────
 
 document.querySelectorAll("[data-garden]").forEach((tab) => {
@@ -352,6 +364,7 @@ async function renderGarden() {
   });
 
   gardenBody.innerHTML = "";
+  renderNoticings(entries, settings);
   if (gardenState.mode === "phase") renderPhase(entries, settings);
   else if (gardenState.mode === "mood") renderMood(entries, settings);
   else renderMonth(entries, settings);

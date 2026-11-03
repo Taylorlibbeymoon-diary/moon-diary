@@ -917,6 +917,14 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
 
 .mood-row { justify-content: center; }
 
+.noticings {
+  padding: 18px 20px 10px;
+  border-radius: 24px;
+  border: 1px solid var(--rosy);
+}
+.noticings .eyebrow { text-align: center; }
+.noticings .hint { margin: 0 0 8px; text-align: center; }
+
 /* ── Entry cards ───────────────────────────────────────── */
 
 .entry-top {

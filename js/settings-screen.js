@@ -19,6 +19,8 @@ const settingsEls = {
   placeClimate: document.getElementById("place-climate"),
   placeHemisphere: document.getElementById("place-hemisphere"),
   ayurvedaShow: document.getElementById("ayurveda-show"),
+  learnPrompts: document.getElementById("learn-prompts"),
+  learnPatterns: document.getElementById("learn-patterns"),
   weatherOn: document.getElementById("weather-on"),
   weatherHint: document.getElementById("weather-hint"),
   weatherConsent: document.getElementById("weather-consent"),
@@ -83,6 +85,8 @@ function renderSettings() {
   renderPlaceList(settings);
 
   settingsEls.ayurvedaShow.checked = settings.ayurveda.show;
+  settingsEls.learnPrompts.checked = settings.learning.adaptPrompts;
+  settingsEls.learnPatterns.checked = settings.learning.patterns;
 
   settingsEls.weatherOn.checked = settings.weather.enabled;
   settingsEls.weatherConsent.hidden = true;
@@ -186,6 +190,20 @@ settingsEls.doshaOptions.addEventListener("click", (event) => {
 settingsEls.ayurvedaShow.addEventListener("change", () => {
   MoonSettings.update((s) => { s.ayurveda.show = settingsEls.ayurvedaShow.checked; });
   refreshHome();
+});
+
+// ── Learning ──────────────────────────────────────────────
+
+settingsEls.learnPrompts.addEventListener("change", () => {
+  const on = settingsEls.learnPrompts.checked;
+  MoonSettings.update((s) => { s.learning.adaptPrompts = on; });
+  // Switching off also lets go of what it had learned.
+  if (!on) MoonLearning.forget();
+  refreshHome();
+});
+
+settingsEls.learnPatterns.addEventListener("change", () => {
+  MoonSettings.update((s) => { s.learning.patterns = settingsEls.learnPatterns.checked; });
 });
 
 // ── Adding a place ────────────────────────────────────────

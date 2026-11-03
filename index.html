@@ -228,6 +228,21 @@
       <button class="link-button flush" type="button" data-go="today">see today's rhythm</button>
     </section>
 
+    <section class="settings-card" aria-labelledby="learning-heading">
+      <h3 class="checkin-label" id="learning-heading">Learning</h3>
+      <p class="hint first">Both are off unless you'd like them, and both are worked out on your phone.</p>
+      <label class="switch-row">
+        <input type="checkbox" id="learn-prompts">
+        <span>Let my questions gently adapt to me</span>
+      </label>
+      <p class="hint">Questions you often pass over come up a little less, and ones you answer a little more.</p>
+      <label class="switch-row">
+        <input type="checkbox" id="learn-patterns">
+        <span>Gently notice patterns</span>
+      </label>
+      <p class="hint">Your garden will share soft observations, like a feeling that often visits in one phase.</p>
+    </section>
+
     <section class="settings-card" aria-labelledby="weather-heading">
       <h3 class="checkin-label" id="weather-heading">Weather</h3>
       <label class="switch-row">
@@ -292,6 +307,7 @@
   <script src="js/rhythms.js"></script>
   <script src="js/weather.js"></script>
   <script src="js/ayurveda.js"></script>
+  <script src="js/learning.js"></script>
   <script src="js/app.js"></script>
   <script src="js/settings-screen.js"></script>
   <script src="js/today-screen.js"></script>

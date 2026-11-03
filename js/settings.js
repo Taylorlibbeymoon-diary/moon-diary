@@ -15,6 +15,7 @@ const MoonSettings = (() => {
     currentPlaceId: null,
     weather: { enabled: false },
     ayurveda: { show: true },
+    learning: { adaptPrompts: false, patterns: false },   // both opt-in
   };
 
   function load() {
@@ -27,6 +28,7 @@ const MoonSettings = (() => {
       cycle: { ...DEFAULTS.cycle, ...(saved.cycle || {}), history: [...((saved.cycle || {}).history || [])] },
       weather: { ...DEFAULTS.weather, ...(saved.weather || {}) },
       ayurveda: { ...DEFAULTS.ayurveda, ...(saved.ayurveda || {}) },
+      learning: { ...DEFAULTS.learning, ...(saved.learning || {}) },
     };
   }
 
