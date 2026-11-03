@@ -190,6 +190,7 @@ h1 {
 .begin-button {
   width: 132px;
   height: 132px;
+  margin: 18px 0;           /* room for the breathing glow, which reaches 18px out */
   border-radius: 50%;
   border: 1px solid var(--berry);
   background: radial-gradient(circle at 35% 30%, var(--rose-glow), var(--rose) 70%, var(--rose-deep));
@@ -312,7 +313,7 @@ button:focus-visible {
   font-size: 30px;
   text-align: center;
 }
-.view .whisper { margin-top: 0; text-align: center; }
+.view:not(.home) .whisper { margin-top: 0; text-align: center; }   /* hint lines under screen titles */
 
 /* ── Camera / voice switch ─────────────────────────────── */
 

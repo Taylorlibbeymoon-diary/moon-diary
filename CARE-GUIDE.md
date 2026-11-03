@@ -86,8 +86,8 @@ If something looks broken or blank, undo your last change (see section 7) and tr
 
 **Step 1: bump the version number in two places.** This tells phones to fetch the fresh files. Both numbers must match.
 
-- In `sw.js`: `const CACHE = "moon-diary-v12";` → change `v12` to `v13`
-- In `js/app.js`: `const APP_VERSION = 12;` → change `12` to `13`
+- In `sw.js`: `const CACHE = "moon-diary-v13";` → change `v13` to `v14`
+- In `js/app.js`: `const APP_VERSION = 13;` → change `13` to `14`
 
 **Step 2: save and send to GitHub.** In Terminal, inside the Moon Diary folder:
 
