@@ -4,12 +4,12 @@
   Keeps a copy of the app's own files on your phone so it opens offline.
   It never touches your diary entries.
 
-  When you change any file, bump the version number below (v5 → v6),
+  When you change any file, bump the version number below (v6 → v7),
   and APP_VERSION in js/app.js to match. That tells phones to fetch the
   fresh files.
 */
 
-const CACHE = "moon-diary-v5";
+const CACHE = "moon-diary-v6";
 
 const APP_FILES = [
   "./",
@@ -17,9 +17,14 @@ const APP_FILES = [
   "css/style.css",
   "js/db.js",
   "js/recorder.js",
+  "js/settings.js",
+  "js/rhythms.js",
+  "js/weather.js",
   "js/app.js",
+  "js/settings-screen.js",
   "content/prompts.js",
   "content/checkin.js",
+  "content/rhythms.js",
   "manifest.webmanifest",
   "icons/icon-180.png",
   "icons/icon-192.png",
@@ -53,6 +58,8 @@ self.addEventListener("activate", (event) => {
 // a tiny, quick question, so updates never wait on old copies.
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  // Only the app's own files. (Weather requests go straight through, unsaved.)
+  if (new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith(
     fetch(event.request, { cache: "no-cache" })
       .then((response) => {

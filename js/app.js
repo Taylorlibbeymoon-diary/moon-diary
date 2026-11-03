@@ -33,24 +33,6 @@ function recall(key) {
   try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
 }
 
-// ── Season ────────────────────────────────────────────────
-// Northern hemisphere for now. A setting for this comes later.
-
-function currentSeason(date = new Date()) {
-  const month = date.getMonth(); // 0 = January
-  if (month >= 2 && month <= 4) return "spring";
-  if (month >= 5 && month <= 7) return "summer";
-  if (month >= 8 && month <= 10) return "autumn";
-  return "winter";
-}
-
-const SEASON_LINES = {
-  spring: "spring is stirring",
-  summer: "the long light of summer",
-  autumn: "autumn, the season of letting go",
-  winter: "the quiet hush of winter",
-};
-
 // ── Greeting ──────────────────────────────────────────────
 
 function greetingFor(date = new Date()) {
@@ -64,21 +46,27 @@ function greetingFor(date = new Date()) {
 
 // ── Choosing today's prompt ───────────────────────────────
 
-// A prompt fits today if it has no season tags, or one of its seasons
-// is today's season. (Cycle phase and dosha join in Phase 4.)
-function fitsToday(prompt, season) {
+// `today` is { season, phase, doshas }. A prompt fits if each of its tags
+// matches today (untagged prompts fit any day). The more of its tags
+// match, the more often it's chosen, so questions made for exactly
+// this moment come up most.
+function promptWeight(prompt, today) {
   const seasons = prompt.seasons || [];
-  if (seasons.length && !seasons.includes(season)) return false;
-  // Phase and dosha prompts wait until the app knows those things.
-  if ((prompt.phases || []).length) return false;
-  if ((prompt.doshas || []).length && !seasons.length) return false;
-  return true;
+  const phases = prompt.phases || [];
+  const doshas = prompt.doshas || [];
+  if (seasons.length && !seasons.includes(today.season)) return 0;
+  if (phases.length && !phases.includes(today.phase)) return 0;
+  if (doshas.length && !doshas.some((d) => today.doshas.includes(d))) return 0;
+  return 1 + (seasons.length ? 1 : 0) + (phases.length ? 1 : 0) + (doshas.length ? 1 : 0);
 }
 
-function promptsForToday(season) {
+function promptsForToday(today) {
   const all = window.MOON_PROMPTS || [];
-  const fitting = all.filter((p) => fitsToday(p, season));
-  return fitting.length ? fitting : all;
+  const weighted = [];
+  for (const prompt of all) {
+    for (let i = 0; i < promptWeight(prompt, today); i++) weighted.push(prompt);
+  }
+  return weighted.length ? weighted : all;
 }
 
 // "another question" moves along the list. We remember how far you
@@ -119,6 +107,7 @@ function showView(name) {
   window.scrollTo(0, 0);
   if (name === "record") enterRecord();
   if (name === "garden") renderGarden();
+  if (name === "settings") renderSettings();
   if (name === "home") refreshIfCalm();
 }
 
@@ -132,40 +121,125 @@ document.addEventListener("click", (event) => {
 
 // The question you're seeing now, so the recording can keep it with it.
 let currentPrompt = "";
+// Today's prompt list and how far "another question" has moved along it.
+let homePrompts = [];
+let homeKey = "";
+let homeOffset = 0;
 
-function renderHome() {
+const promptEl = document.getElementById("prompt-text");
+const placeWrap = document.getElementById("place-wrap");
+const placeButton = document.getElementById("place-button");
+const placeSwitcher = document.getElementById("place-switcher");
+const weatherLine = document.getElementById("weather-line");
+const cycleLine = document.getElementById("cycle-line");
+
+// Everything that can change with the day, your place, cycle or doshas.
+// Runs when the app opens and whenever you change something.
+function refreshHome() {
   const now = new Date();
-  const key = todayKey(now);
-  const season = currentSeason(now);
+  const settings = MoonSettings.load();
+  const place = MoonSettings.currentPlace(settings);
+  const season = MoonRhythms.seasonFor(place, now);
+  const cycle = MoonRhythms.cycleToday(settings.cycle, now);
 
   document.getElementById("today-date").textContent = now.toLocaleDateString(undefined, {
     weekday: "long", month: "long", day: "numeric",
   });
   document.getElementById("greeting").textContent = greetingFor(now);
-  document.getElementById("season-line").textContent = SEASON_LINES[season];
 
-  const list = promptsForToday(season);
-  let offset = loadShuffle(key);
-  const promptEl = document.getElementById("prompt-text");
-  currentPrompt = pickPrompt(list, key, offset);
+  // "Tulum · the dry season, breezy and bright"
+  placeWrap.hidden = !place;
+  if (place) placeButton.textContent = place.name;
+  document.getElementById("season-line").textContent = window.MOON_RHYTHMS.seasons[season] || "";
+  renderPlaceSwitcher(settings);
+
+  // "day 9 · follicular, inner spring"
+  cycleLine.hidden = !(cycle && settings.cycle.show);
+  if (cycle) {
+    cycleLine.textContent = `day ${cycle.day} · ${cycle.phase}, ${window.MOON_RHYTHMS.phases[cycle.phase].season}`;
+  }
+
+  // Weather only if you've switched it on.
+  weatherLine.hidden = true;
+  if (settings.weather.enabled && place) {
+    MoonWeather.today(place, todayKey(now))
+      .then((weather) => {
+        if (!weather) return;
+        weatherLine.textContent = MoonWeather.describe(weather);
+        weatherLine.hidden = false;
+      })
+      .catch(() => {});
+  }
+
+  // Today's question, chosen from your season, phase and doshas.
+  homeKey = todayKey(now);
+  homePrompts = promptsForToday({ season, phase: cycle ? cycle.phase : null, doshas: settings.doshas });
+  homeOffset = loadShuffle(homeKey);
+  currentPrompt = pickPrompt(homePrompts, homeKey, homeOffset);
   promptEl.textContent = currentPrompt;
-
-  document.getElementById("another-prompt").addEventListener("click", () => {
-    offset += 1;
-    remember("moon.promptShuffle", { date: key, offset });
-    currentPrompt = pickPrompt(list, key, offset);
-    // Fade out, swap the words, fade back in.
-    promptEl.classList.add("is-changing");
-    setTimeout(() => {
-      promptEl.textContent = currentPrompt;
-      promptEl.classList.remove("is-changing");
-    }, 500);
-  });
-
-  document.getElementById("begin").addEventListener("click", () => showView("record"));
 }
 
-renderHome();
+// Your places as chips under the greeting. Tap one to move there.
+function renderPlaceSwitcher(settings) {
+  placeSwitcher.innerHTML = "";
+  for (const place of settings.places) {
+    const chip = makeChip(place.name);
+    chip.setAttribute("aria-pressed", String(place.id === settings.currentPlaceId));
+    chip.addEventListener("click", () => {
+      MoonSettings.update((s) => { s.currentPlaceId = place.id; });
+      closePlaceSwitcher();
+      refreshHome();
+    });
+    placeSwitcher.appendChild(chip);
+  }
+  const add = document.createElement("button");
+  add.type = "button";
+  add.className = "link-button";
+  add.textContent = "add a place";
+  add.addEventListener("click", () => {
+    closePlaceSwitcher();
+    showView("settings");
+    document.getElementById("add-place").open = true;
+  });
+  placeSwitcher.appendChild(add);
+}
+
+function closePlaceSwitcher() {
+  placeSwitcher.hidden = true;
+  placeButton.setAttribute("aria-expanded", "false");
+}
+
+placeButton.addEventListener("click", () => {
+  const opening = placeSwitcher.hidden;
+  placeSwitcher.hidden = !opening;
+  placeButton.setAttribute("aria-expanded", String(opening));
+});
+
+document.getElementById("another-prompt").addEventListener("click", () => {
+  // Move along until the words actually change (a question can appear
+  // more than once in the list when it suits today especially well).
+  const before = currentPrompt;
+  for (let i = 0; i < homePrompts.length && currentPrompt === before; i++) {
+    homeOffset += 1;
+    currentPrompt = pickPrompt(homePrompts, homeKey, homeOffset);
+  }
+  remember("moon.promptShuffle", { date: homeKey, offset: homeOffset });
+  // Fade out, swap the words, fade back in.
+  promptEl.classList.add("is-changing");
+  setTimeout(() => {
+    promptEl.textContent = currentPrompt;
+    promptEl.classList.remove("is-changing");
+  }, 500);
+});
+
+document.getElementById("begin").addEventListener("click", () => showView("record"));
+
+// Coming back to the app on a new day (or after midnight) freshens the home screen.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && currentView === "home") refreshHome();
+});
+
+refreshHome();
 
 // ── Recording screen ──────────────────────────────────────
 
@@ -569,7 +643,7 @@ async function renderGarden() {
 
 // Which version this is, shown quietly at the bottom of the garden.
 // Keep it the same as the number in sw.js.
-const APP_VERSION = 5;
+const APP_VERSION = 6;
 document.getElementById("app-version").textContent = APP_VERSION;
 
 let updateWaiting = false;

@@ -47,7 +47,13 @@
       </svg>
       <p class="date" id="today-date"></p>
       <h1 id="greeting">Hello, love</h1>
-      <p class="season" id="season-line"></p>
+      <p class="season">
+        <span id="place-wrap" hidden><button class="place-button" id="place-button" type="button" aria-expanded="false"></button> · </span><span id="season-line"></span>
+      </p>
+      <!-- Tap your place name to switch places -->
+      <div class="place-switcher" id="place-switcher" hidden></div>
+      <p class="season" id="weather-line" hidden></p>
+      <p class="season cycle-line" id="cycle-line" hidden></p>
     </header>
 
     <section class="prompt-card fade-in delay-1" aria-live="polite">
@@ -61,7 +67,10 @@
         <span>Begin</span>
       </button>
       <p class="whisper">Only if you'd like to. There's nothing you need to do today.</p>
-      <button class="link-button" type="button" data-go="garden">visit your garden</button>
+      <p class="home-links">
+        <button class="link-button" type="button" data-go="garden">visit your garden</button>
+        <button class="link-button" type="button" data-go="settings">your rhythms</button>
+      </p>
     </section>
   </main>
 
@@ -131,6 +140,86 @@
     </div>
   </section>
 
+  <!-- ── Your rhythms (settings) ──────────────────────── -->
+  <section class="view settings-view" id="view-settings" aria-label="Your rhythms">
+    <header class="view-header">
+      <button class="link-button" type="button" data-go="home">back home</button>
+    </header>
+    <h2 class="view-title">Your rhythms</h2>
+    <p class="whisper">Everything here is optional, and it all stays on your phone.</p>
+
+    <section class="settings-card" aria-labelledby="cycle-heading">
+      <h3 class="checkin-label" id="cycle-heading">Your cycle</h3>
+      <label class="field">
+        <span>When did your last period start?</span>
+        <input type="date" id="cycle-start">
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>Usual cycle</span>
+          <select id="cycle-length"></select>
+        </label>
+        <label class="field">
+          <span>Usual period</span>
+          <select id="period-length"></select>
+        </label>
+      </div>
+      <button class="link-button flush" id="period-today" type="button">my period started today</button>
+      <label class="switch-row">
+        <input type="checkbox" id="cycle-show">
+        <span>Show my phase on the home screen</span>
+      </label>
+      <p class="hint" id="cycle-preview"></p>
+    </section>
+
+    <section class="settings-card" aria-labelledby="dosha-heading">
+      <h3 class="checkin-label" id="dosha-heading">Your doshas</h3>
+      <p class="hint first">Choose any you feel you lean toward. You can change this whenever you like.</p>
+      <div id="dosha-options"></div>
+    </section>
+
+    <section class="settings-card" aria-labelledby="places-heading">
+      <h3 class="checkin-label" id="places-heading">Your places</h3>
+      <p class="hint first" id="places-empty">Add the places you spend time in, and switch between them with a tap on the home screen.</p>
+      <ul class="place-list" id="place-list"></ul>
+
+      <details class="add-place" id="add-place">
+        <summary>add a place</summary>
+        <label class="field">
+          <span>Name</span>
+          <input type="text" id="place-name" placeholder="Tulum" autocomplete="off">
+        </label>
+        <button class="soft-button small" id="place-locate" type="button">use where I am now</button>
+        <p class="hint" id="place-located">Optional. Helps with weather and finding your climate. Saved only on your phone, rounded to about 10 km.</p>
+        <p class="field-label">Climate</p>
+        <div class="chip-row" id="place-climate"></div>
+        <p class="field-label">Hemisphere</p>
+        <div class="chip-row" id="place-hemisphere">
+          <button class="chip" type="button" data-value="north" aria-pressed="true">north</button>
+          <button class="chip" type="button" data-value="south" aria-pressed="false">south</button>
+        </div>
+        <button class="soft-button" id="place-save" type="button">Save this place</button>
+      </details>
+    </section>
+
+    <section class="settings-card" aria-labelledby="weather-heading">
+      <h3 class="checkin-label" id="weather-heading">Weather</h3>
+      <label class="switch-row">
+        <input type="checkbox" id="weather-on">
+        <span>Gently notice today's weather</span>
+      </label>
+      <p class="hint" id="weather-hint">Off. Your climate and seasons work without it.</p>
+      <div class="consent" id="weather-consent" hidden>
+        <p>When weather is on, once a day Moon Diary sends <strong>only</strong> your current place's rough location (<span id="consent-coords"></span>) to Open-Meteo, a free weather service, to ask about today's weather.</p>
+        <p>Never your entries, recordings, name, or anything else.</p>
+        <div class="consent-actions">
+          <button class="soft-button" id="weather-yes" type="button">Turn weather on</button>
+          <button class="link-button" id="weather-no" type="button">not now</button>
+        </div>
+      </div>
+    </section>
+  </section>
+
   <!-- ── Garden (a simple list for now; the full garden is Phase 5) ── -->
   <section class="view garden-view" id="view-garden" aria-label="Your garden">
     <header class="view-header">
@@ -160,8 +249,13 @@
   <!-- Your prompts first, then the app that uses them -->
   <script src="content/prompts.js"></script>
   <script src="content/checkin.js"></script>
+  <script src="content/rhythms.js"></script>
   <script src="js/db.js"></script>
   <script src="js/recorder.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/rhythms.js"></script>
+  <script src="js/weather.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/settings-screen.js"></script>
 </body>
 </html>

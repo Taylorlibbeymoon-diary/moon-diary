@@ -7,7 +7,8 @@
 
     {
       text: "The question you'll see on the home screen",
-      seasons: ["autumn", "winter"],   // optional: spring, summer, autumn, winter
+      seasons: ["autumn", "winter"],   // optional: spring, summer, autumn, winter (four-season places)
+                                       //       or dry, hot, rainy (tropical places, like Tulum)
       phases:  ["luteal"],             // optional: menstrual, follicular, ovulatory, luteal
       doshas:  ["vata"],               // optional: vata, pitta, kapha
     },
@@ -47,6 +48,14 @@ window.MOON_PROMPTS = [
   { text: "Which warm, slow ritual is calling to you this week?", seasons: ["autumn", "winter"] },
   { text: "What does rest look like for you in this darker season?", seasons: ["winter"] },
   { text: "What small light are you keeping lit right now?", seasons: ["winter"] },
+
+  // ── Tropical seasons ──────────────────────────────────
+  { text: "What is the breeze carrying in for you this season?", seasons: ["dry"] },
+  { text: "Where does your skin and body want a little more moisture and oil today?", seasons: ["dry"], doshas: ["vata"] },
+  { text: "What helps you stay soft and cool when the heat is high?", seasons: ["hot"] },
+  { text: "Where could you rest in the shade of your day, even for a moment?", seasons: ["hot"], doshas: ["pitta"] },
+  { text: "What is the rain washing clean for you right now?", seasons: ["rainy"] },
+  { text: "What would bring a little warmth and lightness on a heavy, humid day?", seasons: ["rainy"], doshas: ["kapha"] },
 
   // ── Cycle phases (used from Phase 4) ──────────────────
   { text: "What does your body need most from you today?", phases: ["menstrual"] },
