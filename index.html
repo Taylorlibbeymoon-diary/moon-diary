@@ -243,6 +243,23 @@
       <p class="hint">Your garden will share soft observations, like a feeling that often visits in one phase.</p>
     </section>
 
+    <section class="settings-card" aria-labelledby="claude-heading">
+      <h3 class="checkin-label" id="claude-heading">Claude letters</h3>
+      <p class="hint first">Monthly and seasonal letters written by Claude from your check-in words and notes. Nothing is ever sent without you seeing it first and tapping send.</p>
+      <p class="rhythm-line" id="claude-key-status"></p>
+      <div id="claude-key-form">
+        <label class="field">
+          <span>Your Anthropic API key</span>
+          <input type="password" id="claude-key" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk-ant-…">
+        </label>
+        <button class="soft-button small" id="claude-key-save" type="button">Save key</button>
+        <p class="hint" id="claude-key-hint">Kept only on this phone, and used only when you tap “Send to Claude”.</p>
+      </div>
+      <button class="link-button flush" id="claude-key-remove" type="button" hidden>remove my key from this phone</button>
+      <br>
+      <button class="link-button flush" type="button" data-go="letters">your letters</button>
+    </section>
+
     <section class="settings-card" aria-labelledby="weather-heading">
       <h3 class="checkin-label" id="weather-heading">Weather</h3>
       <label class="switch-row">
@@ -261,12 +278,61 @@
     </section>
   </section>
 
+  <!-- ── Your letters (written with Claude, only when you choose) ── -->
+  <section class="view letters-view" id="view-letters" aria-label="Your letters">
+    <header class="view-header">
+      <button class="link-button" type="button" data-go="garden">back to your garden</button>
+    </header>
+    <h2 class="view-title">Your letters</h2>
+    <p class="whisper">Written by Claude from your words, only when you ask, and only after you've seen exactly what would be sent.</p>
+    <section class="settings-card" id="letters-need-key" hidden>
+      <p class="rhythm-line">To write letters, add your Claude key in your rhythms first.</p>
+      <button class="link-button flush" type="button" data-go="settings">go to your rhythms</button>
+    </section>
+    <div class="today-sections" id="letters-list"></div>
+  </section>
+
+  <!-- ── Before anything leaves your phone ────────────── -->
+  <section class="view consent-view" id="view-consent" aria-label="Before anything leaves your phone">
+    <h2 class="view-title">Before anything leaves your phone</h2>
+    <p class="whisper" id="consent-title"></p>
+    <p class="hint first consent-promise">Only these words. Never your recordings, pictures or location coordinates.</p>
+    <section class="settings-card">
+      <h3 class="checkin-label">What would be sent</h3>
+      <pre class="send-preview" id="consent-preview"></pre>
+      <details class="consent-details">
+        <summary>and these writing instructions</summary>
+        <pre class="send-preview" id="consent-instructions"></pre>
+      </details>
+    </section>
+    <p class="hint">Each letter costs a few cents on your Anthropic account.</p>
+    <p class="consent-message" id="consent-message" aria-live="polite"></p>
+    <div class="review-actions" id="consent-actions">
+      <button class="soft-button" id="consent-send" type="button">Send to Claude</button>
+      <button class="link-button" id="consent-not-now" type="button">not now</button>
+    </div>
+  </section>
+
+  <!-- ── Reading a letter ─────────────────────────────── -->
+  <section class="view letter-view" id="view-letter" aria-label="Your letter">
+    <header class="view-header">
+      <button class="link-button" type="button" data-go="letters">back to your letters</button>
+    </header>
+    <h2 class="view-title" id="letter-title"></h2>
+    <div class="entry-checkin letter-themes" id="letter-themes"></div>
+    <div id="letter-summary"></div>
+    <article class="letter-paper" id="letter-text"></article>
+    <p class="hint letter-footer" id="letter-footer"></p>
+    <p class="garden-filter-row"><button class="link-button" id="letter-remove" type="button">let this letter go</button></p>
+  </section>
+
   <!-- ── Garden (a simple list for now; the full garden is Phase 5) ── -->
   <section class="view garden-view" id="view-garden" aria-label="Your garden">
     <header class="view-header">
       <button class="link-button" type="button" data-go="home">back home</button>
     </header>
     <h2 class="view-title">Your garden</h2>
+    <p class="garden-filter-row"><button class="link-button" type="button" data-go="letters">your letters</button></p>
     <p class="whisper">Every moment you've kept, growing here.</p>
 
     <div class="mode-toggle garden-tabs" role="group" aria-label="Browse your garden">
@@ -301,6 +367,7 @@
   <script src="content/checkin.js"></script>
   <script src="content/rhythms.js"></script>
   <script src="content/ayurveda.js"></script>
+  <script src="content/letters.js"></script>
   <script src="js/db.js"></script>
   <script src="js/recorder.js"></script>
   <script src="js/settings.js"></script>
@@ -308,9 +375,11 @@
   <script src="js/weather.js"></script>
   <script src="js/ayurveda.js"></script>
   <script src="js/learning.js"></script>
+  <script src="js/claude.js"></script>
   <script src="js/app.js"></script>
   <script src="js/settings-screen.js"></script>
   <script src="js/today-screen.js"></script>
   <script src="js/garden.js"></script>
+  <script src="js/letters.js"></script>
 </body>
 </html>

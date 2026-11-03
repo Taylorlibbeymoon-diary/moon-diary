@@ -273,6 +273,9 @@ button:focus-visible {
 .checkin-view,
 .settings-view,
 .today-view,
+.letters-view,
+.consent-view,
+.letter-view,
 .garden-view {
   position: relative;
   z-index: 1;
@@ -643,6 +646,85 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   color: var(--midnight);
 }
 
+/* ── Letters ───────────────────────────────────────────── */
+
+.letter-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.letter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--moss-pale);
+}
+.letter-row:first-child { border-top: none; padding-top: 0; }
+.letter-row p { margin: 0; }
+.letter-row .hint { margin-top: 2px; }
+.letter-row-title { font-size: 17px; }
+
+.consent-view { padding-top: 32px; }
+.consent-promise { text-align: center; font-style: italic; }
+
+/* The exact words that would be sent, shown as they are */
+.send-preview {
+  max-height: 46vh;
+  overflow: auto;
+  margin: 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--beige);
+  border: 1px solid var(--moss-pale);
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  -webkit-overflow-scrolling: touch;
+}
+.consent-details summary {
+  margin-top: 12px;
+  padding: 8px 0;
+  font-style: italic;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.consent-message {
+  margin: 0;
+  text-align: center;
+  font-size: 16px;
+}
+.consent-message:empty { display: none; }
+.consent-message.is-writing {
+  font-style: italic;
+  animation: soft-pulse 3s ease-in-out infinite;
+}
+.error-detail {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  word-break: break-word;
+}
+
+.letter-themes { justify-content: center; }
+.letter-view .rhythm-line { text-align: center; margin: 0; font-size: 16px; color: var(--ink-soft); }
+
+.letter-paper {
+  padding: 26px 22px;
+  border-radius: 24px;
+  background: var(--beige-deep);
+  border: 1px solid var(--rosy);
+  font-size: 18px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.letter-footer { text-align: center; font-style: italic; }
+
 /* ── Your rhythms (settings) ───────────────────────────── */
 
 .settings-card {
@@ -668,6 +750,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
 
 input[type="date"],
 input[type="text"],
+input[type="password"],
 select {
   width: 100%;
   min-height: 48px;
@@ -1033,5 +1116,6 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   .fade-in { animation: none; opacity: 1; transform: none; }
   .begin-button, .mode-voice .voice-orb, .is-recording .record-dot { animation: none; }
   .view.is-active { animation: none; }
+  .consent-message.is-writing { animation: none; }
   .prompt-text, .toast { transition: none; }
 }

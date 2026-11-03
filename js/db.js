@@ -4,15 +4,16 @@
   Your entries live in IndexedDB, a private storage space inside your
   phone's browser. Nothing here ever goes to the internet.
 
-  There are two "drawers":
+  There are three "drawers":
   - entries: small notes about each recording (date, kind, length, prompt)
   - media:   the recordings themselves, kept separately so the garden can
              list everything quickly without loading every video
+  - letters: the monthly and seasonal letters you've kept
 */
 
 const MoonDB = (() => {
   const DB_NAME = "moon-diary";
-  const VERSION = 1;
+  const VERSION = 2;
   let dbPromise;
 
   // Turns IndexedDB's old-style callbacks into something we can "await".
@@ -44,6 +45,9 @@ const MoonDB = (() => {
           }
           if (!db.objectStoreNames.contains("media")) {
             db.createObjectStore("media", { keyPath: "id" });
+          }
+          if (!db.objectStoreNames.contains("letters")) {
+            db.createObjectStore("letters", { keyPath: "id" });
           }
         };
         req.onsuccess = () => resolve(req.result);
@@ -98,6 +102,27 @@ const MoonDB = (() => {
     await finished(tx);
   }
 
+  // ── Letters ─────────────────────────────────────────────
+
+  async function saveLetter(letter) {
+    const db = await open();
+    const tx = db.transaction("letters", "readwrite");
+    tx.objectStore("letters").put(letter);
+    await finished(tx);
+  }
+
+  async function listLetters() {
+    const db = await open();
+    return request(db.transaction("letters").objectStore("letters").getAll());
+  }
+
+  async function deleteLetter(id) {
+    const db = await open();
+    const tx = db.transaction("letters", "readwrite");
+    tx.objectStore("letters").delete(id);
+    await finished(tx);
+  }
+
   // Asks the phone to treat this storage as precious and not tidy it
   // away when space runs low. Quietly does nothing where unsupported.
   async function askToKeepStorage() {
@@ -109,5 +134,9 @@ const MoonDB = (() => {
     return false;
   }
 
-  return { saveEntry, updateEntry, listEntries, getMedia, deleteEntry, askToKeepStorage };
+  return {
+    saveEntry, updateEntry, listEntries, getMedia, deleteEntry,
+    saveLetter, listLetters, deleteLetter,
+    askToKeepStorage,
+  };
 })();

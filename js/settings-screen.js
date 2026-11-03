@@ -88,6 +88,8 @@ function renderSettings() {
   settingsEls.learnPrompts.checked = settings.learning.adaptPrompts;
   settingsEls.learnPatterns.checked = settings.learning.patterns;
 
+  renderClaudeKey();
+
   settingsEls.weatherOn.checked = settings.weather.enabled;
   settingsEls.weatherConsent.hidden = true;
   settingsEls.weatherHint.textContent = settings.weather.enabled
@@ -204,6 +206,44 @@ settingsEls.learnPrompts.addEventListener("change", () => {
 
 settingsEls.learnPatterns.addEventListener("change", () => {
   MoonSettings.update((s) => { s.learning.patterns = settingsEls.learnPatterns.checked; });
+});
+
+// ── Claude letters: your key ──────────────────────────────
+
+const claudeKeyInput = document.getElementById("claude-key");
+const claudeKeyHint = document.getElementById("claude-key-hint");
+
+function renderClaudeKey() {
+  const saved = MoonClaude.hasKey();
+  document.getElementById("claude-key-status").textContent = saved
+    ? "Your key is saved on this phone."
+    : "No key yet. Letters stay off until you add one.";
+  document.getElementById("claude-key-form").hidden = saved;
+  document.getElementById("claude-key-remove").hidden = !saved;
+  document.getElementById("claude-key-remove").textContent = "remove my key from this phone";
+  claudeKeyInput.value = "";
+}
+
+document.getElementById("claude-key-save").addEventListener("click", () => {
+  const key = claudeKeyInput.value.trim();
+  if (!key.startsWith("sk-ant-")) {
+    claudeKeyHint.textContent = "That doesn't look like an Anthropic key yet. Keys begin with “sk-ant-”.";
+    return;
+  }
+  MoonClaude.saveKey(key);
+  claudeKeyHint.textContent = "Kept only on this phone, and used only when you tap “Send to Claude”.";
+  renderClaudeKey();
+  showToast("Your key is saved on this phone.");
+});
+
+const claudeKeyRemove = document.getElementById("claude-key-remove");
+claudeKeyRemove.addEventListener("click", () => {
+  if (claudeKeyRemove.textContent === "remove my key from this phone") {
+    claudeKeyRemove.textContent = "tap again to remove it";
+    return;
+  }
+  MoonClaude.forgetKey();
+  renderClaudeKey();
 });
 
 // ── Adding a place ────────────────────────────────────────
