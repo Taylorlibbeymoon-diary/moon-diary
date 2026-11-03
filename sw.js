@@ -8,12 +8,14 @@
   That tells phones to fetch the fresh files.
 */
 
-const CACHE = "moon-diary-v1";
+const CACHE = "moon-diary-v2";
 
 const APP_FILES = [
   "./",
   "index.html",
   "css/style.css",
+  "js/db.js",
+  "js/recorder.js",
   "js/app.js",
   "content/prompts.js",
   "manifest.webmanifest",

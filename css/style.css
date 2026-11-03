@@ -244,9 +244,256 @@ button:focus-visible {
   to { opacity: 1; transform: none; }
 }
 
+/* ── Screens ("views") ─────────────────────────────────── */
+
+.view:not(.is-active) { display: none; }
+.view.is-active { animation: view-in 700ms ease; }
+
+@keyframes view-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.record-view,
+.review-view,
+.garden-view {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 20px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+}
+.view-header .link-button { padding-left: 0; }
+
+.view-title {
+  margin: 8px 0 0;
+  font-weight: 400;
+  font-size: 30px;
+  text-align: center;
+}
+.view .whisper { margin-top: 0; }
+
+/* ── Camera / voice switch ─────────────────────────────── */
+
+.mode-toggle {
+  display: flex;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--sage-pale);
+}
+.mode-chip {
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background var(--slow) ease, color var(--slow) ease;
+}
+.mode-chip[aria-pressed="true"] {
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: 0 2px 8px -4px rgba(111, 129, 103, 0.6);
+}
+
+/* While recording, hide things you might bump by accident */
+.is-recording .hide-while-recording { visibility: hidden; }
+
+.record-prompt {
+  margin: 0;
+  text-align: center;
+  font-size: 19px;
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* ── The stage: camera preview or the voice orb ────────── */
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 260px;
+  max-height: 56vh;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--cream-deep);
+  border: 1px solid var(--sage-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);   /* like a mirror, the way you're used to seeing yourself */
+}
+.mode-voice .preview { display: none; }
+
+.voice-orb { display: none; }
+.mode-voice .voice-orb {
+  display: block;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fbeee9, var(--blush));
+  animation: breathe 7s ease-in-out infinite;
+}
+.is-recording.mode-voice .voice-orb { animation-duration: 3.5s; }
+
+.stage-message {
+  position: absolute;
+  inset: auto 20px 20px;
+  margin: 0;
+  text-align: center;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+.stage-message:empty { display: none; }
+.review-view > .stage-message { position: static; }
+
+/* ── Start / stop button ───────────────────────────────── */
+
+.record-controls { text-align: center; }
+
+.record-button {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 1px solid var(--blush-deep);
+  background: radial-gradient(circle at 35% 30%, #fbeee9, var(--blush));
+  font: inherit;
+  font-size: 17px;
+  color: var(--ink);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: opacity var(--slow) ease, transform 600ms ease;
+}
+.record-button:active { transform: scale(0.96); }
+.record-button:disabled { opacity: 0.45; cursor: default; }
+
+.record-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--blush-deep);
+}
+.is-recording .record-dot {
+  border-radius: 3px;                       /* becomes a soft "stop" square */
+  animation: soft-pulse 2.4s ease-in-out infinite;
+}
+@keyframes soft-pulse {
+  50% { opacity: 0.4; }
+}
+
+.record-time {
+  margin: 10px 0 0;
+  font-size: 15px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Review ────────────────────────────────────────────── */
+
+.review-stage { background: var(--sage-pale); }
+.review-media { width: 100%; max-height: 100%; }
+.review-media[hidden] { display: none; }
+audio.review-media { width: calc(100% - 40px); }
+
+.review-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.soft-button {
+  min-width: 200px;
+  padding: 15px 28px;
+  border-radius: 999px;
+  border: 1px solid var(--sage-deep);
+  background: var(--sage-deep);
+  color: var(--cream);
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+  transition: opacity var(--slow) ease;
+}
+.soft-button:disabled { opacity: 0.6; }
+
+/* ── Garden list ───────────────────────────────────────── */
+
+.entry-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.entry {
+  background: var(--cream-deep);
+  border: 1px solid var(--sage-pale);
+  border-radius: 22px;
+  padding: 16px 18px 10px;
+}
+.entry-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.entry-prompt {
+  margin: 6px 0 4px;
+  font-size: 17px;
+  font-style: italic;
+}
+.entry-actions {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 -14px;
+}
+.entry-actions [data-action="remove"] { margin-left: auto; }
+.entry-player video,
+.entry-player audio {
+  width: 100%;
+  margin-top: 8px;
+  border-radius: 14px;
+}
+
+.empty-garden {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-soft);
+  padding: 40px 12px;
+}
+
 /* If the phone is set to "Reduce Motion", keep everything still */
 @media (prefers-reduced-motion: reduce) {
   .fade-in { animation: none; opacity: 1; transform: none; }
-  .begin-button { animation: none; }
+  .begin-button, .mode-voice .voice-orb, .is-recording .record-dot { animation: none; }
+  .view.is-active { animation: none; }
   .prompt-text, .toast { transition: none; }
 }
