@@ -3,31 +3,36 @@
   ====================
   All the colours live here at the top. Change one and it changes everywhere.
 
-  The lotus pond palette:
-    Dark green #0A3323 · Moss green #839958 · Beige #F7F4D5
-    Rosy brown #D3968C · Midnight green #105666
-  Moss and rosy are too light for words on beige, so they're used for
-  leaves, borders and glows only.
+  The fig palette (deep, emotional, feminine):
+    Plum #503447 · Deep Raspberry #862C4D · Berry #B25074 · Rose #D8ADAA
+    Lilac #B385A2 · Cream #E9D8C0 · Sagewood #507555 · Peach #E18079
+  Berry, sagewood and peach are too light for words on cream, so they're
+  used for blooms, leaves, the moon and borders only.
 */
 
 :root {
-  /* The five palette colours */
-  --ink:        #0a3323;  /* dark green: main text */
-  --moss:       #839958;  /* moss green: leaves, underlines */
-  --beige:      #f7f4d5;  /* beige: the page */
-  --rosy:       #d3968c;  /* rosy brown: blooms, the moon, borders */
-  --midnight:   #105666;  /* midnight green: buttons, stems, small headings */
+  /* The main palette colours */
+  --ink:        #503447;  /* plum: main text */
+  --raspberry:  #862c4d;  /* deep raspberry: buttons, small headings, chosen chips */
+  --berry:      #b25074;  /* berry: blooms, borders */
+  --peach:      #e18079;  /* peach: the little moon */
+  --sage:       #507555;  /* sagewood: leaves and stems, underlines */
+  --cream:      #f1e6d6;  /* cream, a little lighter: the page */
 
   /* Softer shades made from them */
-  --beige-deep: #ebebc9;  /* cards: beige with a touch of moss */
-  --moss-pale:  #dde0ba;  /* the camera / voice switch, messages */
-  --rosy-pale:  #ebc4bc;  /* the Begin button */
-  --rosy-glow:  #f6e2dc;  /* the light catching the Begin button */
-  --ink-soft:   #3e5d4a;  /* quieter text: dates, hints */
+  --cream-light: #f6efe6; /* cards, lifted slightly above the page */
+  --lilac-pale: #e0cbc7;  /* lilac on cream: the camera / voice switch, tags, messages */
+  --rose:       #debbb5;  /* rose: the Begin button */
+  --rose-glow:  #efdedd;  /* the light catching the Begin button */
+  --rose-deep:  #cf9e9f;  /* the shadowed edge of the Begin button */
+  --cream-blush: #ead8cf; /* the lower part of the page: cream warmed with rose */
+  --ink-soft:   #684f5c;  /* softer plum: dates, hints */
 
   /* The same colours written as numbers, for see-through glows and shadows */
-  --shadow-rgb: 10, 51, 35;    /* dark green */
-  --glow-rgb:   235, 196, 188; /* pale rosy */
+  --shadow-rgb: 80, 52, 71;    /* plum */
+  --glow-rgb:   216, 173, 170; /* rose */
+  --cream-rgb:  241, 230, 214; /* the page */
+  --sage-rgb:   80, 117, 85;   /* sagewood */
 
   /* Iowan Old Style is a gentle serif built into iPhones and Macs,
      so the app never has to fetch a font from the internet. */
@@ -44,7 +49,9 @@ html, body {
 }
 
 body {
-  background: var(--beige);
+  /* Cream at the top, deepening to a hint of rose further down */
+  background: var(--cream) linear-gradient(180deg, var(--cream) 0%, var(--cream-blush) 100%) no-repeat;
+  min-height: 100vh;
   color: var(--ink);
   font-family: var(--serif);
   font-size: 18px;
@@ -75,21 +82,21 @@ body {
 .sprig .stem,
 .sprig .vein {
   fill: none;
-  stroke: var(--midnight);
+  stroke: var(--sage);
   stroke-width: 1.4;
   stroke-linecap: round;
   opacity: 0.55;
 }
 .sprig .vein { stroke-width: 0.8; opacity: 0.35; }
 .sprig .leaf {
-  fill: var(--moss);
+  fill: var(--sage);
   fill-opacity: 0.28;
-  stroke: var(--midnight);
+  stroke: var(--sage);
   stroke-width: 1.1;
   stroke-linejoin: round;
   stroke-opacity: 0.5;
 }
-.sprig .bloom       { fill: var(--rosy); opacity: 0.55; }
+.sprig .bloom       { fill: var(--berry); opacity: 0.55; }
 .sprig .bloom.soft  { opacity: 0.35; }
 
 /* ── Home layout ───────────────────────────────────────── */
@@ -113,8 +120,8 @@ body {
 .moon {
   width: 30px;
   height: 30px;
-  fill: var(--rosy);
-  opacity: 0.8;
+  fill: var(--peach);
+  opacity: 0.9;
   margin-bottom: 8px;
 }
 
@@ -138,12 +145,12 @@ h1 {
 /* ── The prompt card ───────────────────────────────────── */
 
 .prompt-card {
-  background: var(--beige-deep);
-  border: 1px solid var(--moss-pale);
+  background: linear-gradient(160deg, var(--cream-light) 0%, var(--rose-glow) 100%);
+  border: 1px solid rgba(var(--glow-rgb), 0.8);
   border-radius: 28px;
   padding: 30px 26px 22px;
   text-align: center;
-  box-shadow: 0 10px 30px -18px rgba(var(--shadow-rgb), 0.45);
+  box-shadow: 0 18px 40px -22px rgba(var(--shadow-rgb), 0.55);
 }
 
 .eyebrow {
@@ -151,7 +158,7 @@ h1 {
   font-size: 13px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--midnight);
+  color: var(--raspberry);
 }
 
 .prompt-text {
@@ -171,7 +178,7 @@ h1 {
   font-style: italic;
   color: var(--ink-soft);
   text-decoration: underline;
-  text-decoration-color: var(--moss);
+  text-decoration-color: var(--sage);
   text-underline-offset: 4px;
   cursor: pointer;
 }
@@ -184,8 +191,8 @@ h1 {
   width: 132px;
   height: 132px;
   border-radius: 50%;
-  border: 1px solid var(--rosy);
-  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
+  border: 1px solid var(--berry);
+  background: radial-gradient(circle at 35% 30%, var(--rose-glow), var(--rose) 70%, var(--rose-deep));
   color: var(--ink);
   font: inherit;
   font-size: 21px;
@@ -213,7 +220,7 @@ h1 {
 
 /* Visible focus ring for anyone using a keyboard */
 button:focus-visible {
-  outline: 2px solid var(--midnight);
+  outline: 2px solid var(--raspberry);
   outline-offset: 4px;
 }
 
@@ -228,8 +235,8 @@ button:focus-visible {
   width: max-content;
   padding: 12px 20px;
   border-radius: 22px;
-  border: 1px solid var(--moss);
-  background: var(--moss-pale);
+  border: 1px solid var(--sage);
+  background: var(--lilac-pale);
   color: var(--ink);
   box-shadow: 0 10px 30px -16px rgba(var(--shadow-rgb), 0.5);
   font-size: 15px;
@@ -313,7 +320,7 @@ button:focus-visible {
   display: flex;
   padding: 4px;
   border-radius: 999px;
-  background: var(--moss-pale);
+  background: var(--lilac-pale);
 }
 .mode-chip {
   border: none;
@@ -327,7 +334,7 @@ button:focus-visible {
   transition: background var(--slow) ease, color var(--slow) ease;
 }
 .mode-chip[aria-pressed="true"] {
-  background: var(--beige);
+  background: var(--cream);
   color: var(--ink);
   box-shadow: 0 2px 8px -4px rgba(var(--shadow-rgb), 0.6);
 }
@@ -352,8 +359,8 @@ button:focus-visible {
   max-height: 56vh;
   border-radius: 28px;
   overflow: hidden;
-  background: var(--beige-deep);
-  border: 1px solid var(--moss-pale);
+  background: var(--cream-light);
+  border: 1px solid var(--lilac-pale);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -373,7 +380,7 @@ button:focus-visible {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
+  background: radial-gradient(circle at 35% 30%, var(--rose-glow), var(--rose));
   animation: breathe 7s ease-in-out infinite;
 }
 .is-recording.mode-voice .voice-orb { animation-duration: 3.5s; }
@@ -397,8 +404,8 @@ button:focus-visible {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 1px solid var(--rosy);
-  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
+  border: 1px solid var(--berry);
+  background: radial-gradient(circle at 35% 30%, var(--rose-glow), var(--rose));
   font: inherit;
   font-size: 17px;
   color: var(--ink);
@@ -417,7 +424,7 @@ button:focus-visible {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--rosy);
+  background: var(--berry);
 }
 .is-recording .record-dot {
   border-radius: 3px;                       /* becomes a soft "stop" square */
@@ -436,7 +443,7 @@ button:focus-visible {
 
 /* ── Review ────────────────────────────────────────────── */
 
-.review-stage { background: var(--moss-pale); }
+.review-stage { background: var(--lilac-pale); }
 .review-media { width: 100%; max-height: 100%; }
 .review-media[hidden] { display: none; }
 audio.review-media { width: calc(100% - 40px); }
@@ -452,9 +459,9 @@ audio.review-media { width: calc(100% - 40px); }
   min-width: 200px;
   padding: 15px 28px;
   border-radius: 999px;
-  border: 1px solid var(--midnight);
-  background: var(--midnight);
-  color: var(--beige);
+  border: 1px solid var(--raspberry);
+  background: var(--raspberry);
+  color: var(--cream);
   font: inherit;
   font-size: 18px;
   cursor: pointer;
@@ -475,7 +482,7 @@ audio.review-media { width: calc(100% - 40px); }
   font-size: 13px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--midnight);
+  color: var(--raspberry);
 }
 
 .chip-row {
@@ -488,7 +495,7 @@ audio.review-media { width: calc(100% - 40px); }
   min-height: 40px;
   padding: 8px 15px;
   border-radius: 999px;
-  border: 1px solid var(--moss);
+  border: 1px solid var(--sage);
   background: transparent;
   color: var(--ink);
   font: inherit;
@@ -497,17 +504,17 @@ audio.review-media { width: calc(100% - 40px); }
   transition: background 500ms ease, color 500ms ease, border-color 500ms ease;
 }
 .chip[aria-pressed="true"] {
-  background: var(--midnight);
-  border-color: var(--midnight);
-  color: var(--beige);
+  background: var(--raspberry);
+  border-color: var(--raspberry);
+  color: var(--cream);
 }
 
 textarea {
   width: 100%;
   padding: 14px 16px;
   border-radius: 18px;
-  border: 1px solid var(--moss);
-  background: var(--beige-deep);
+  border: 1px solid var(--sage);
+  background: var(--cream-light);
   color: var(--ink);
   font: inherit;
   font-size: 17px;          /* 16px or more stops iPhone zooming in */
@@ -515,7 +522,7 @@ textarea {
   resize: vertical;
 }
 textarea::placeholder { color: var(--ink-soft); font-style: italic; }
-textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; }
+textarea:focus-visible { outline: 2px solid var(--raspberry); outline-offset: 2px; }
 
 /* "Done" floats at the bottom while you scroll, over a soft fade */
 .checkin-done {
@@ -524,7 +531,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   margin: 0 -20px -32px;
   padding: 24px 20px calc(16px + env(safe-area-inset-bottom));
   text-align: center;
-  background: linear-gradient(to bottom, rgba(247, 244, 213, 0), var(--beige) 45%);
+  background: linear-gradient(to bottom, rgba(var(--cream-rgb), 0), var(--cream) 45%);
 }
 
 /* ── Home: place, weather, cycle lines ─────────────────── */
@@ -537,7 +544,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   font-style: italic;
   color: var(--ink);
   text-decoration: underline;
-  text-decoration-color: var(--moss);
+  text-decoration-color: var(--sage);
   text-underline-offset: 4px;
   cursor: pointer;
 }
@@ -566,7 +573,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
 .invitation-card {
   padding: 22px 24px 14px;
   border-radius: 24px;
-  border: 1px solid var(--rosy);
+  border: 1px solid var(--berry);
   text-align: center;
 }
 .invitation-card[hidden] { display: none; }
@@ -608,7 +615,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   width: 10px;
   height: 6px;
   border-radius: 0 100% 0 100%;
-  background: var(--moss);
+  background: var(--sage);
 }
 
 .day-parts {
@@ -618,7 +625,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
 }
 .day-part {
   padding: 12px 0;
-  border-top: 1px solid var(--moss-pale);
+  border-top: 1px solid var(--lilac-pale);
 }
 .day-part:first-child { border-top: none; padding-top: 0; }
 .day-part-head {
@@ -634,8 +641,8 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   padding: 14px 18px;
   border-top: none;
   border-radius: 18px;
-  background: var(--beige);
-  border: 1px solid var(--rosy);
+  background: var(--cream);
+  border: 1px solid var(--berry);
 }
 .day-part.is-now + .day-part { border-top: none; }
 .day-part.is-now .invitations { margin-top: 10px; }
@@ -644,7 +651,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   margin-left: 6px;
   font-size: 13px;
   font-style: italic;
-  color: var(--midnight);
+  color: var(--raspberry);
 }
 
 /* ── Letters ───────────────────────────────────────────── */
@@ -660,7 +667,7 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   justify-content: space-between;
   gap: 12px;
   padding: 10px 0;
-  border-top: 1px solid var(--moss-pale);
+  border-top: 1px solid var(--lilac-pale);
 }
 .letter-row:first-child { border-top: none; padding-top: 0; }
 .letter-row p { margin: 0; }
@@ -677,8 +684,8 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   margin: 0;
   padding: 14px;
   border-radius: 14px;
-  background: var(--beige);
-  border: 1px solid var(--moss-pale);
+  background: var(--cream);
+  border: 1px solid var(--lilac-pale);
   font-family: var(--serif);
   font-size: 15px;
   line-height: 1.5;
@@ -718,8 +725,8 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
 .letter-paper {
   padding: 26px 22px;
   border-radius: 24px;
-  background: var(--beige-deep);
-  border: 1px solid var(--rosy);
+  background: var(--cream-light);
+  border: 1px solid var(--berry);
   font-size: 18px;
   line-height: 1.7;
   white-space: pre-wrap;
@@ -757,8 +764,8 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
 /* ── Your rhythms (settings) ───────────────────────────── */
 
 .settings-card {
-  background: var(--beige-deep);
-  border: 1px solid var(--moss-pale);
+  background: var(--cream-light);
+  border: 1px solid var(--lilac-pale);
   border-radius: 24px;
   padding: 20px 18px;
 }
@@ -785,8 +792,8 @@ select {
   min-height: 48px;
   padding: 11px 14px;
   border-radius: 14px;
-  border: 1px solid var(--moss);
-  background: var(--beige);
+  border: 1px solid var(--sage);
+  background: var(--cream);
   color: var(--ink);
   font: inherit;
   font-size: 17px;          /* 16px or more stops iPhone zooming in */
@@ -796,7 +803,7 @@ select {
 }
 input[type="date"]::-webkit-date-and-time-value { text-align: left; }
 input:focus-visible,
-select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; }
+select:focus-visible { outline: 2px solid var(--raspberry); outline-offset: 2px; }
 
 .switch-row {
   display: flex;
@@ -810,7 +817,7 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   width: 22px;
   height: 22px;
   flex: none;
-  accent-color: var(--midnight);
+  accent-color: var(--raspberry);
 }
 
 .hint {
@@ -829,7 +836,7 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   margin: 0 0 8px;
   padding: 12px 16px;
   border-radius: 18px;
-  border: 1px solid var(--moss);
+  border: 1px solid var(--sage);
   background: transparent;
   color: var(--ink);
   font: inherit;
@@ -840,11 +847,11 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
 .dosha-option strong { display: block; font-weight: 400; font-size: 18px; }
 .dosha-option span { font-size: 14px; color: var(--ink-soft); transition: color 500ms ease; }
 .dosha-option[aria-pressed="true"] {
-  background: var(--midnight);
-  border-color: var(--midnight);
-  color: var(--beige);
+  background: var(--raspberry);
+  border-color: var(--raspberry);
+  color: var(--cream);
 }
-.dosha-option[aria-pressed="true"] span { color: var(--beige); }
+.dosha-option[aria-pressed="true"] span { color: var(--cream); }
 
 .place-list {
   list-style: none;
@@ -863,7 +870,7 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   flex: 1;
   padding: 10px 16px;
   border-radius: 18px;
-  border: 1px solid var(--moss);
+  border: 1px solid var(--sage);
   background: transparent;
   color: var(--ink);
   font: inherit;
@@ -874,18 +881,18 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
 }
 .place-pick small { display: block; font-size: 14px; color: var(--ink-soft); }
 .place-pick[aria-pressed="true"] {
-  background: var(--midnight);
-  border-color: var(--midnight);
-  color: var(--beige);
+  background: var(--raspberry);
+  border-color: var(--raspberry);
+  color: var(--cream);
 }
-.place-pick[aria-pressed="true"] small { color: var(--beige); }
+.place-pick[aria-pressed="true"] small { color: var(--cream); }
 
 .add-place summary {
   padding: 10px 0;
   font-style: italic;
   color: var(--ink-soft);
   text-decoration: underline;
-  text-decoration-color: var(--moss);
+  text-decoration-color: var(--sage);
   text-underline-offset: 4px;
   cursor: pointer;
   list-style: none;
@@ -899,15 +906,15 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   padding: 10px 18px;
   font-size: 16px;
   background: transparent;
-  color: var(--midnight);
+  color: var(--raspberry);
 }
 
 .consent {
   margin-top: 14px;
   padding: 16px;
   border-radius: 18px;
-  background: var(--beige);
-  border: 1px solid var(--moss);
+  background: var(--cream);
+  border: 1px solid var(--sage);
   font-size: 16px;
 }
 .consent p { margin: 0 0 10px; }
@@ -944,7 +951,7 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid var(--moss);
+  border: 1px solid var(--sage);
   background: transparent;
   color: var(--ink);
   font: inherit;
@@ -960,8 +967,8 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   gap: 4px;
   padding: 14px 10px;
   border-radius: 24px;
-  background: var(--beige-deep);
-  border: 1px solid var(--moss-pale);
+  background: var(--cream-light);
+  border: 1px solid var(--lilac-pale);
 }
 .weekday {
   text-align: center;
@@ -985,7 +992,7 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   font-size: 14px;
   padding: 0;
 }
-.day-cell.is-today { box-shadow: inset 0 0 0 1px var(--midnight); color: var(--ink); }
+.day-cell.is-today { box-shadow: inset 0 0 0 1px var(--raspberry); color: var(--ink); }
 .day-cell.has-bloom { color: var(--ink); cursor: pointer; }
 .day-number { position: relative; z-index: 1; }
 
@@ -994,22 +1001,22 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   position: absolute;
   inset: 18%;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
+  background: radial-gradient(circle at 35% 30%, var(--rose-glow), var(--rose));
   box-shadow: 0 0 0 2px rgba(var(--glow-rgb), 0.5);
 }
 .many .bloom {
   inset: 10%;
-  box-shadow: 0 0 0 3px rgba(var(--glow-rgb), 0.6), 0 0 0 6px rgba(131, 153, 88, 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--glow-rgb), 0.6), 0 0 0 6px rgba(var(--sage-rgb), 0.25);
 }
-.is-chosen .bloom { background: var(--rosy); }
-.is-chosen .day-number { color: var(--beige); }
+.is-chosen .bloom { background: var(--berry); }
+.is-chosen .day-number { color: var(--cream); }
 
 .garden-filter-row { margin: 0; text-align: center; }
 
 .phase-group {
   border-radius: 24px;
-  background: var(--beige-deep);
-  border: 1px solid var(--moss-pale);
+  background: var(--cream-light);
+  border: 1px solid var(--lilac-pale);
   padding: 4px 18px;
 }
 .phase-group summary {
@@ -1025,14 +1032,14 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
 .phase-name { font-size: 18px; }
 .phase-group summary small { font-size: 14px; color: var(--ink-soft); white-space: nowrap; }
 .phase-group[open] { padding-bottom: 16px; }
-.phase-group .entry { background: var(--beige); }
+.phase-group .entry { background: var(--cream); }
 
 .mood-row { justify-content: center; }
 
 .noticings {
   padding: 18px 20px 10px;
   border-radius: 24px;
-  border: 1px solid var(--rosy);
+  border: 1px solid var(--berry);
 }
 .noticings .eyebrow { text-align: center; }
 .noticings .hint { margin: 0 0 8px; text-align: center; }
@@ -1053,16 +1060,16 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  background: var(--moss-pale);
+  background: var(--lilac-pale);
 }
 .entry-still img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .entry-still.still-voice {
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
-  box-shadow: inset 0 0 0 1px var(--rosy);
+  background: radial-gradient(circle at 35% 30%, var(--rose-glow), var(--rose));
+  box-shadow: inset 0 0 0 1px var(--berry);
 }
 .entry-still.still-video {
-  background: radial-gradient(circle at 35% 30%, var(--moss-pale), var(--moss));
+  background: radial-gradient(circle at 35% 30%, var(--lilac-pale), var(--sage));
 }
 .entry-heading p { margin: 0; }
 .entry-when { font-size: 16px; }
@@ -1082,8 +1089,8 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
 }
 
 .entry {
-  background: var(--beige-deep);
-  border: 1px solid var(--moss-pale);
+  background: var(--cream-light);
+  border: 1px solid var(--lilac-pale);
   border-radius: 22px;
   padding: 16px 18px 10px;
 }
@@ -1109,7 +1116,7 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
 .entry-checkin span {
   padding: 3px 11px;
   border-radius: 999px;
-  background: var(--moss-pale);
+  background: var(--lilac-pale);
   font-size: 14px;
 }
 .entry-note {

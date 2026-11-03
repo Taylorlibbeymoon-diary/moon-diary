@@ -81,17 +81,17 @@ function keepsakePage(title, entries, letters, settings) {
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(title)}</title>
 <style>
-  body { margin: 0; background: #f7f4d5; color: #0a3323; font-family: "Iowan Old Style", Palatino, Georgia, serif; line-height: 1.6; }
+  body { margin: 0; background: #f1e6d6; color: #503447; font-family: "Iowan Old Style", Palatino, Georgia, serif; line-height: 1.6; }
   main { max-width: 640px; margin: 0 auto; padding: 32px 18px 64px; }
   h1 { font-weight: 400; text-align: center; margin: 0 0 4px; }
-  .sub { text-align: center; color: #3e5d4a; font-style: italic; margin: 0 0 28px; }
-  article { background: #ebebc9; border: 1px solid #dde0ba; border-radius: 22px; padding: 16px 18px; margin: 0 0 14px; }
-  .when { margin: 0; font-size: 14px; color: #3e5d4a; }
+  .sub { text-align: center; color: #684f5c; font-style: italic; margin: 0 0 28px; }
+  article { background: #f6efe6; border: 1px solid #e0cbc7; border-radius: 22px; padding: 16px 18px; margin: 0 0 14px; }
+  .when { margin: 0; font-size: 14px; color: #684f5c; }
   .prompt { font-style: italic; font-size: 17px; margin: 6px 0; }
-  .tags span { display: inline-block; background: #dde0ba; border-radius: 999px; padding: 2px 10px; margin: 0 4px 4px 0; font-size: 14px; }
+  .tags span { display: inline-block; background: #e0cbc7; border-radius: 999px; padding: 2px 10px; margin: 0 4px 4px 0; font-size: 14px; }
   .note, .letter-text { white-space: pre-wrap; }
-  a { color: #105666; }
-  .letter { border-color: #d3968c; }
+  a { color: #862c4d; }
+  .letter { border-color: #b25074; }
   .letter h2 { font-weight: 400; margin: 0 0 6px; }
 </style></head>
 <body><main>
