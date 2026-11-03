@@ -119,6 +119,7 @@ function showView(name) {
   window.scrollTo(0, 0);
   if (name === "record") enterRecord();
   if (name === "garden") renderGarden();
+  if (name === "home") refreshIfCalm();
 }
 
 // Any button with data-go="somewhere" takes you there.
@@ -562,12 +563,45 @@ async function renderGarden() {
   }
 }
 
-// ── Offline support ───────────────────────────────────────
+// ── Offline support and updates ───────────────────────────
 // The service worker keeps a copy of the app on your phone so it opens
 // even without signal. It only stores the app's own files.
 
+// Which version this is, shown quietly at the bottom of the garden.
+// Keep it the same as the number in sw.js.
+const APP_VERSION = 5;
+document.getElementById("app-version").textContent = APP_VERSION;
+
+let updateWaiting = false;
+
+// A newer version has arrived. Refresh at a calm moment: on the home
+// screen, never in the middle of recording or a check-in.
+function refreshIfCalm() {
+  if (updateWaiting && currentView === "home" && !MoonRecorder.isRecording()) {
+    location.reload();
+  }
+}
+
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("sw.js", { updateViaCache: "none" });
+      // iPhone often resumes the app instead of reopening it, so check
+      // for a newer version each time you come back.
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) registration.update().catch(() => {});
+      });
+    } catch (e) {}
+  });
+
+  let hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    // The very first install isn't an update, so there's nothing to refresh.
+    if (!hadController) {
+      hadController = true;
+      return;
+    }
+    updateWaiting = true;
+    refreshIfCalm();
   });
 }

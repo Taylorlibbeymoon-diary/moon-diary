@@ -583,6 +583,14 @@ textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px
   border-radius: 14px;
 }
 
+.version-note {
+  margin: auto 0 0;          /* sits at the very bottom of the garden */
+  padding-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
 .empty-garden {
   text-align: center;
   font-style: italic;
