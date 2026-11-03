@@ -337,8 +337,8 @@ keepButton.addEventListener("click", async () => {
   try {
     await MoonDB.saveEntry(entry, pending.blob);
     MoonDB.askToKeepStorage();
-    showView("home");
-    showToast("Kept safely on your phone.");
+    // The recording is already safe; the check-in is a gentle extra.
+    openCheckin(entry, "home");
   } catch (error) {
     keepButton.disabled = false;
     reviewMessage.textContent = "This couldn't be kept just now. Your phone may be low on space. Your recording is still here, so you can try again.";
@@ -355,7 +355,133 @@ letGoButton.addEventListener("click", () => {
   showToast("Let go. That's okay too.");
 });
 
+// ── Check-in ──────────────────────────────────────────────
+
+const checkinGroupsEl = document.getElementById("checkin-groups");
+const checkinNote = document.getElementById("checkin-note");
+let checkinEntryId = null;
+let checkinReturnTo = "home";
+
+function makeChip(word) {
+  const chip = document.createElement("button");
+  chip.type = "button";
+  chip.className = "chip";
+  chip.textContent = word;
+  chip.setAttribute("aria-pressed", "false");
+  return chip;
+}
+
+// Builds the chips once, from your content/checkin.js file.
+function buildCheckinGroups() {
+  for (const group of window.MOON_CHECKIN || []) {
+    const section = document.createElement("div");
+    section.className = "checkin-group";
+    section.dataset.group = group.id;
+    section.dataset.pick = group.pick;
+
+    const label = document.createElement("p");
+    label.className = "checkin-label";
+    label.id = `checkin-label-${group.id}`;
+    label.textContent = group.label;
+
+    const row = document.createElement("div");
+    row.className = "chip-row";
+    row.setAttribute("role", "group");
+    row.setAttribute("aria-labelledby", label.id);
+    group.chips.forEach((word) => row.appendChild(makeChip(word)));
+
+    section.append(label, row);
+    checkinGroupsEl.appendChild(section);
+  }
+}
+buildCheckinGroups();
+
+// Tap a chip to choose it, tap again to unchoose. In "one" groups,
+// choosing a chip unchooses the others.
+checkinGroupsEl.addEventListener("click", (event) => {
+  const chip = event.target.closest(".chip");
+  if (!chip) return;
+  const group = chip.closest(".checkin-group");
+  const turningOn = chip.getAttribute("aria-pressed") !== "true";
+  if (group.dataset.pick === "one") {
+    group.querySelectorAll(".chip").forEach((other) => other.setAttribute("aria-pressed", "false"));
+  }
+  chip.setAttribute("aria-pressed", String(turningOn));
+});
+
+function openCheckin(entry, returnTo) {
+  checkinEntryId = entry.id;
+  checkinReturnTo = returnTo;
+  const saved = entry.checkin || {};
+
+  checkinGroupsEl.querySelectorAll(".chip-extra").forEach((chip) => chip.remove());
+  checkinGroupsEl.querySelectorAll(".checkin-group").forEach((group) => {
+    const chosen = [].concat(saved[group.dataset.group] || []);
+    const chips = [...group.querySelectorAll(".chip")];
+    chips.forEach((chip) => chip.setAttribute("aria-pressed", String(chosen.includes(chip.textContent))));
+    // A word you chose before but later renamed in checkin.js still shows,
+    // so editing an old check-in never quietly loses it.
+    chosen
+      .filter((word) => !chips.some((chip) => chip.textContent === word))
+      .forEach((word) => {
+        const chip = makeChip(word);
+        chip.classList.add("chip-extra");
+        chip.setAttribute("aria-pressed", "true");
+        group.querySelector(".chip-row").appendChild(chip);
+      });
+  });
+  checkinNote.value = saved.note || "";
+  showView("checkin");
+}
+
+// Gathers what you tapped and wrote. Untouched groups are left out.
+function collectCheckin() {
+  const checkin = {};
+  checkinGroupsEl.querySelectorAll(".checkin-group").forEach((group) => {
+    const chosen = [...group.querySelectorAll('.chip[aria-pressed="true"]')].map((chip) => chip.textContent);
+    if (chosen.length) checkin[group.dataset.group] = group.dataset.pick === "one" ? chosen[0] : chosen;
+  });
+  const note = checkinNote.value.trim();
+  if (note) checkin.note = note;
+  return checkin;
+}
+
+function leaveCheckin(message) {
+  showView(checkinReturnTo);
+  if (checkinReturnTo === "home") showToast(message);
+}
+
+document.getElementById("checkin-skip").addEventListener("click", () => {
+  leaveCheckin("Kept safely on your phone.");
+});
+
+document.getElementById("checkin-done").addEventListener("click", async () => {
+  const checkin = collectCheckin();
+  const hasAnything = Object.keys(checkin).length > 0;
+  try {
+    await MoonDB.updateEntry(checkinEntryId, {
+      checkin: hasAnything ? { ...checkin, updatedAt: new Date().toISOString() } : null,
+    });
+  } catch (error) {
+    showToast("That check-in couldn't be saved just now. Your recording is safe.");
+  }
+  leaveCheckin(hasAnything ? "Kept, with care." : "Kept safely on your phone.");
+});
+
 // ── Garden (simple list) ──────────────────────────────────
+
+// Check-in words as little tags, in the same order as checkin.js.
+function checkinTags(checkin) {
+  if (!checkin) return [];
+  const tags = [];
+  for (const group of window.MOON_CHECKIN || []) {
+    const value = checkin[group.id];
+    if (!value) continue;
+    if (group.pick === "one") tags.push(`${group.id} · ${value}`);
+    else tags.push(...value);
+  }
+  return tags;
+}
 
 const entryList = document.getElementById("entry-list");
 
@@ -387,14 +513,26 @@ async function renderGarden() {
         <span>${entry.kind === "video" ? "video" : "voice"} · ${formatDuration(entry.durationMs)}</span>
       </div>
       <p class="entry-prompt"></p>
+      <div class="entry-checkin"></div>
+      <p class="entry-note"></p>
       <div class="entry-player"></div>
       <div class="entry-actions">
         <button class="link-button" type="button" data-action="play">${entry.kind === "video" ? "watch" : "listen"}</button>
+        <button class="link-button" type="button" data-action="checkin">${entry.checkin ? "edit check-in" : "check in"}</button>
         <button class="link-button" type="button" data-action="remove">let go</button>
       </div>`;
     // Your words go in as plain text, never as code.
     item.querySelector(".entry-meta span").textContent = describeWhen(entry.createdAt);
     item.querySelector(".entry-prompt").textContent = entry.prompt || "";
+    const tagsEl = item.querySelector(".entry-checkin");
+    checkinTags(entry.checkin).forEach((word) => {
+      const tag = document.createElement("span");
+      tag.textContent = word;
+      tagsEl.appendChild(tag);
+    });
+    item.querySelector(".entry-note").textContent = (entry.checkin && entry.checkin.note) || "";
+
+    item.querySelector('[data-action="checkin"]').addEventListener("click", () => openCheckin(entry, "garden"));
 
     item.querySelector('[data-action="play"]').addEventListener("click", async (event) => {
       const player = item.querySelector(".entry-player");

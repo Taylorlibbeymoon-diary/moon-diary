@@ -77,6 +77,19 @@ const MoonDB = (() => {
     return record ? new Blob([record.data], { type: record.type }) : null;
   }
 
+  // Adds or changes details on an entry (like its check-in),
+  // without touching the recording itself.
+  async function updateEntry(id, changes) {
+    const db = await open();
+    const tx = db.transaction("entries", "readwrite");
+    const store = tx.objectStore("entries");
+    const req = store.get(id);
+    req.onsuccess = () => {
+      if (req.result) store.put({ ...req.result, ...changes });
+    };
+    await finished(tx);
+  }
+
   async function deleteEntry(id) {
     const db = await open();
     const tx = db.transaction(["entries", "media"], "readwrite");
@@ -96,5 +109,5 @@ const MoonDB = (() => {
     return false;
   }
 
-  return { saveEntry, listEntries, getMedia, deleteEntry, askToKeepStorage };
+  return { saveEntry, updateEntry, listEntries, getMedia, deleteEntry, askToKeepStorage };
 })();

@@ -109,6 +109,28 @@
     </div>
   </section>
 
+  <!-- ── Check-in (after keeping, or from the garden) ─── -->
+  <section class="view checkin-view" id="view-checkin" aria-label="Check-in">
+    <header class="view-header">
+      <span></span>
+      <button class="link-button" id="checkin-skip" type="button">skip for now</button>
+    </header>
+    <h2 class="view-title">A gentle check-in</h2>
+    <p class="whisper">Tap anything that feels true. All of it is optional.</p>
+
+    <!-- The chips are built from content/checkin.js -->
+    <div id="checkin-groups"></div>
+
+    <label class="checkin-group">
+      <span class="checkin-label">Anything else you'd like to remember?</span>
+      <textarea id="checkin-note" rows="4" placeholder="a word, a moment, a feeling…"></textarea>
+    </label>
+
+    <div class="checkin-done">
+      <button class="soft-button" id="checkin-done" type="button">Done</button>
+    </div>
+  </section>
+
   <!-- ── Garden (a simple list for now; the full garden is Phase 5) ── -->
   <section class="view garden-view" id="view-garden" aria-label="Your garden">
     <header class="view-header">
@@ -136,6 +158,7 @@
 
   <!-- Your prompts first, then the app that uses them -->
   <script src="content/prompts.js"></script>
+  <script src="content/checkin.js"></script>
   <script src="js/db.js"></script>
   <script src="js/recorder.js"></script>
   <script src="js/app.js"></script>

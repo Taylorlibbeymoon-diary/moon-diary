@@ -270,6 +270,7 @@ button:focus-visible {
 
 .record-view,
 .review-view,
+.checkin-view,
 .garden-view {
   position: relative;
   z-index: 1;
@@ -298,7 +299,7 @@ button:focus-visible {
   font-size: 30px;
   text-align: center;
 }
-.view .whisper { margin-top: 0; }
+.view .whisper { margin-top: 0; text-align: center; }
 
 /* ── Camera / voice switch ─────────────────────────────── */
 
@@ -455,6 +456,71 @@ audio.review-media { width: calc(100% - 40px); }
 }
 .soft-button:disabled { opacity: 0.6; }
 
+/* ── Check-in ──────────────────────────────────────────── */
+
+.checkin-group {
+  display: block;
+  margin: 0 0 22px;
+}
+
+.checkin-label {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--midnight);
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--moss);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 500ms ease, color 500ms ease, border-color 500ms ease;
+}
+.chip[aria-pressed="true"] {
+  background: var(--midnight);
+  border-color: var(--midnight);
+  color: var(--beige);
+}
+
+textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--moss);
+  background: var(--beige-deep);
+  color: var(--ink);
+  font: inherit;
+  font-size: 17px;          /* 16px or more stops iPhone zooming in */
+  line-height: 1.5;
+  resize: vertical;
+}
+textarea::placeholder { color: var(--ink-soft); font-style: italic; }
+textarea:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; }
+
+/* "Done" floats at the bottom while you scroll, over a soft fade */
+.checkin-done {
+  position: sticky;
+  bottom: 0;
+  margin: 0 -20px -32px;
+  padding: 24px 20px calc(16px + env(safe-area-inset-bottom));
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(247, 244, 213, 0), var(--beige) 45%);
+}
+
 /* ── Garden list ───────────────────────────────────────── */
 
 .entry-list {
@@ -490,6 +556,26 @@ audio.review-media { width: calc(100% - 40px); }
   margin: 0 -14px;
 }
 .entry-actions [data-action="remove"] { margin-left: auto; }
+
+.entry-checkin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 4px;
+}
+.entry-checkin:empty { display: none; }
+.entry-checkin span {
+  padding: 3px 11px;
+  border-radius: 999px;
+  background: var(--moss-pale);
+  font-size: 14px;
+}
+.entry-note {
+  margin: 8px 0 2px;
+  font-size: 16px;
+  white-space: pre-wrap;
+}
+.entry-note:empty { display: none; }
 .entry-player video,
 .entry-player audio {
   width: 100%;
