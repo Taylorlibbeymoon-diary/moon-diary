@@ -376,6 +376,13 @@ recordButton.addEventListener("click", () => {
   timeTicker = setInterval(() => {
     recordTime.textContent = formatDuration(MoonRecorder.elapsedMs());
   }, 1000);
+  // About a second and a half in, take a soft still for the garden.
+  liveStill = null;
+  if (recordMode === "video") {
+    setTimeout(() => {
+      if (MoonRecorder.isRecording()) liveStill = stillFromPreview();
+    }, 1500);
+  }
 });
 
 // If you switch apps or the phone locks while recording, stop and keep
@@ -395,9 +402,42 @@ const letGoButton = document.getElementById("let-go");
 
 let pending = null;      // the recording waiting for "keep" or "let go"
 let pendingUrl = null;
+let liveStill = null;    // a small picture taken from the camera while recording
+
+// A small, soft picture from the camera preview, for the garden.
+// (Taken from the live camera view, which works reliably on iPhone.)
+function stillFromPreview() {
+  if (!preview.videoWidth) return null;
+  try {
+    const width = 240;
+    const height = Math.round(width * (preview.videoHeight / preview.videoWidth));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d").drawImage(preview, 0, 0, width, height);
+    return canvas.toDataURL("image/jpeg", 0.72);
+  } catch (error) {
+    return null;
+  }
+}
+
+// What this moment was: cycle day and phase, season, and place.
+// Kept with the entry so the garden stays true even if settings change.
+function momentSnapshot() {
+  const moment = currentMoment();
+  return {
+    cycle: moment.cycle ? { day: moment.cycle.day, phase: moment.cycle.phase } : null,
+    season: moment.season,
+    place: moment.place ? moment.place.name : null,
+  };
+}
 
 function finishedRecording(recording) {
-  pending = { ...recording, prompt: currentPrompt, recordedAt: new Date() };
+  // If the recording was too short for the still, take one now, while
+  // the camera is still on.
+  const still = recording.mode === "video" ? (liveStill || stillFromPreview()) : null;
+  liveStill = null;
+  pending = { ...recording, prompt: currentPrompt, recordedAt: new Date(), still, moment: momentSnapshot() };
   showView("review");
 
   pendingUrl = URL.createObjectURL(recording.blob);
@@ -436,6 +476,8 @@ keepButton.addEventListener("click", async () => {
     durationMs: pending.durationMs,
     size: pending.blob.size,
     prompt: pending.prompt,
+    still: pending.still,
+    ...pending.moment,
   };
   try {
     await MoonDB.saveEntry(entry, pending.blob);
@@ -571,107 +613,13 @@ document.getElementById("checkin-done").addEventListener("click", async () => {
   leaveCheckin(hasAnything ? "Kept, with care." : "Kept safely on your phone.");
 });
 
-// ── Garden (simple list) ──────────────────────────────────
-
-// Check-in words as little tags, in the same order as checkin.js.
-function checkinTags(checkin) {
-  if (!checkin) return [];
-  const tags = [];
-  for (const group of window.MOON_CHECKIN || []) {
-    const value = checkin[group.id];
-    if (!value) continue;
-    if (group.pick === "one") tags.push(`${group.id} · ${value}`);
-    else tags.push(...value);
-  }
-  return tags;
-}
-
-const entryList = document.getElementById("entry-list");
-
-function describeWhen(iso) {
-  const date = new Date(iso);
-  const day = date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
-  const time = date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-  return `${day} · ${time}`;
-}
-
-async function renderGarden() {
-  let entries = [];
-  try {
-    entries = await MoonDB.listEntries();
-  } catch (error) {}
-
-  entryList.innerHTML = "";
-  if (!entries.length) {
-    entryList.innerHTML = '<li class="empty-garden">Your garden is resting. When you keep a recording, it will grow here.</li>';
-    return;
-  }
-
-  for (const entry of entries) {
-    const item = document.createElement("li");
-    item.className = "entry";
-    item.innerHTML = `
-      <div class="entry-meta">
-        <span></span>
-        <span>${entry.kind === "video" ? "video" : "voice"} · ${formatDuration(entry.durationMs)}</span>
-      </div>
-      <p class="entry-prompt"></p>
-      <div class="entry-checkin"></div>
-      <p class="entry-note"></p>
-      <div class="entry-player"></div>
-      <div class="entry-actions">
-        <button class="link-button" type="button" data-action="play">${entry.kind === "video" ? "watch" : "listen"}</button>
-        <button class="link-button" type="button" data-action="checkin">${entry.checkin ? "edit check-in" : "check in"}</button>
-        <button class="link-button" type="button" data-action="remove">let go</button>
-      </div>`;
-    // Your words go in as plain text, never as code.
-    item.querySelector(".entry-meta span").textContent = describeWhen(entry.createdAt);
-    item.querySelector(".entry-prompt").textContent = entry.prompt || "";
-    const tagsEl = item.querySelector(".entry-checkin");
-    checkinTags(entry.checkin).forEach((word) => {
-      const tag = document.createElement("span");
-      tag.textContent = word;
-      tagsEl.appendChild(tag);
-    });
-    item.querySelector(".entry-note").textContent = (entry.checkin && entry.checkin.note) || "";
-
-    item.querySelector('[data-action="checkin"]').addEventListener("click", () => openCheckin(entry, "garden"));
-
-    item.querySelector('[data-action="play"]').addEventListener("click", async (event) => {
-      const player = item.querySelector(".entry-player");
-      if (player.firstChild) return;
-      const blob = await MoonDB.getMedia(entry.id);
-      if (!blob) return;
-      const media = document.createElement(entry.kind === "video" ? "video" : "audio");
-      media.controls = true;
-      media.playsInline = true;
-      media.src = URL.createObjectURL(blob);
-      player.appendChild(media);
-      media.play().catch(() => {});
-      event.target.hidden = true;
-    });
-
-    const removeButton = item.querySelector('[data-action="remove"]');
-    removeButton.addEventListener("click", async () => {
-      if (removeButton.textContent === "let go") {
-        removeButton.textContent = "tap again to let go";
-        return;
-      }
-      await MoonDB.deleteEntry(entry.id);
-      renderGarden();
-    });
-
-    entryList.appendChild(item);
-  }
-}
-
 // ── Offline support and updates ───────────────────────────
 // The service worker keeps a copy of the app on your phone so it opens
 // even without signal. It only stores the app's own files.
 
 // Which version this is, shown quietly at the bottom of the garden.
 // Keep it the same as the number in sw.js.
-const APP_VERSION = 7;
+const APP_VERSION = 8;
 document.getElementById("app-version").textContent = APP_VERSION;
 
 let updateWaiting = false;

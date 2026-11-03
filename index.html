@@ -252,9 +252,18 @@
       <button class="link-button" type="button" data-go="home">back home</button>
     </header>
     <h2 class="view-title">Your garden</h2>
-    <p class="whisper">A simple list for now. A fuller garden blooms later on.</p>
-    <ul class="entry-list" id="entry-list"></ul>
-    <p class="version-note">Moon Diary · version <span id="app-version"></span></p>
+    <p class="whisper">Every moment you've kept, growing here.</p>
+
+    <div class="mode-toggle garden-tabs" role="group" aria-label="Browse your garden">
+      <button class="mode-chip" type="button" data-garden="month" aria-pressed="true">by month</button>
+      <button class="mode-chip" type="button" data-garden="phase" aria-pressed="false">by phase</button>
+      <button class="mode-chip" type="button" data-garden="mood" aria-pressed="false">by mood</button>
+    </div>
+
+    <!-- Filled in by js/garden.js -->
+    <div class="garden-body" id="garden-body"></div>
+
+    <p class="version-note"><span id="storage-note"></span>Moon Diary · version <span id="app-version"></span></p>
   </section>
 
   <!-- A small, gentle message that floats up and fades away -->
@@ -286,5 +295,6 @@
   <script src="js/app.js"></script>
   <script src="js/settings-screen.js"></script>
   <script src="js/today-screen.js"></script>
+  <script src="js/garden.js"></script>
 </body>
 </html>

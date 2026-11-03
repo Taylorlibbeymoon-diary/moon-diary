@@ -8,7 +8,8 @@ const MoonSettings = (() => {
   const KEY = "moon.settings";
 
   const DEFAULTS = {
-    cycle: { lastStart: "", length: 28, periodLength: 5, show: true },
+    // history: earlier period start dates, so past entries keep the right phase
+    cycle: { lastStart: "", length: 28, periodLength: 5, show: true, history: [] },
     doshas: [],
     places: [],          // { id, name, climate, hemisphere, lat, lon }
     currentPlaceId: null,
@@ -23,7 +24,7 @@ const MoonSettings = (() => {
     return {
       ...DEFAULTS,
       ...saved,
-      cycle: { ...DEFAULTS.cycle, ...(saved.cycle || {}) },
+      cycle: { ...DEFAULTS.cycle, ...(saved.cycle || {}), history: [...((saved.cycle || {}).history || [])] },
       weather: { ...DEFAULTS.weather, ...(saved.weather || {}) },
       ayurveda: { ...DEFAULTS.ayurveda, ...(saved.ayurveda || {}) },
     };

@@ -808,6 +808,148 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   margin-top: 6px;
 }
 
+/* ── Garden: tabs, month calendar, phases, moods ───────── */
+
+.garden-tabs { align-self: center; }
+
+.garden-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.month-title {
+  margin: 0;
+  font-weight: 400;
+  font-size: 22px;
+}
+.month-step {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--moss);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.month-step:disabled { opacity: 0.3; cursor: default; }
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 14px 10px;
+  border-radius: 24px;
+  background: var(--beige-deep);
+  border: 1px solid var(--moss-pale);
+}
+.weekday {
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  padding-bottom: 4px;
+}
+.day-cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 14px;
+  padding: 0;
+}
+.day-cell.is-today { box-shadow: inset 0 0 0 1px var(--midnight); color: var(--ink); }
+.day-cell.has-bloom { color: var(--ink); cursor: pointer; }
+.day-number { position: relative; z-index: 1; }
+
+/* A little bloom behind days you kept something */
+.bloom {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
+  box-shadow: 0 0 0 2px rgba(var(--glow-rgb), 0.5);
+}
+.many .bloom {
+  inset: 10%;
+  box-shadow: 0 0 0 3px rgba(var(--glow-rgb), 0.6), 0 0 0 6px rgba(131, 153, 88, 0.25);
+}
+.is-chosen .bloom { background: var(--rosy); }
+.is-chosen .day-number { color: var(--beige); }
+
+.garden-filter-row { margin: 0; text-align: center; }
+
+.phase-group {
+  border-radius: 24px;
+  background: var(--beige-deep);
+  border: 1px solid var(--moss-pale);
+  padding: 4px 18px;
+}
+.phase-group summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 14px 0;
+  cursor: pointer;
+  list-style: none;
+}
+.phase-group summary::-webkit-details-marker { display: none; }
+.phase-name { font-size: 18px; }
+.phase-group summary small { font-size: 14px; color: var(--ink-soft); white-space: nowrap; }
+.phase-group[open] { padding-bottom: 16px; }
+.phase-group .entry { background: var(--beige); }
+
+.mood-row { justify-content: center; }
+
+/* ── Entry cards ───────────────────────────────────────── */
+
+.entry-top {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.entry-still {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: none;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--moss-pale);
+}
+.entry-still img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.entry-still.still-voice {
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
+  box-shadow: inset 0 0 0 1px var(--rosy);
+}
+.entry-still.still-video {
+  background: radial-gradient(circle at 35% 30%, var(--moss-pale), var(--moss));
+}
+.entry-heading p { margin: 0; }
+.entry-when { font-size: 16px; }
+.entry-context,
+.entry-kind { font-size: 14px; color: var(--ink-soft); }
+.entry-context:empty { display: none; }
+
 /* ── Garden list ───────────────────────────────────────── */
 
 .entry-list {
@@ -825,15 +967,8 @@ select:focus-visible { outline: 2px solid var(--midnight); outline-offset: 2px; 
   border-radius: 22px;
   padding: 16px 18px 10px;
 }
-.entry-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 14px;
-  color: var(--ink-soft);
-}
 .entry-prompt {
-  margin: 6px 0 4px;
+  margin: 12px 0 4px;
   font-size: 17px;
   font-style: italic;
 }

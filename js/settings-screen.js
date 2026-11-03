@@ -142,7 +142,14 @@ function renderPlaceList(settings) {
 
 function saveCycle() {
   MoonSettings.update((s) => {
-    s.cycle.lastStart = settingsEls.cycleStart.value;
+    const previous = s.cycle.lastStart;
+    const next = settingsEls.cycleStart.value;
+    // A newer period: remember the old date, so past entries keep their phase.
+    // (An earlier date is treated as a correction, not a new period.)
+    if (previous && next > previous && !s.cycle.history.includes(previous)) {
+      s.cycle.history.push(previous);
+    }
+    s.cycle.lastStart = next;
     s.cycle.length = Number(settingsEls.cycleLength.value);
     s.cycle.periodLength = Number(settingsEls.periodLength.value);
     s.cycle.show = settingsEls.cycleShow.checked;

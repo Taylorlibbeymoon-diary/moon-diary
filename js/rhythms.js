@@ -21,27 +21,37 @@ const MoonRhythms = (() => {
   // Ovulation is estimated at about 14 days before your next period.
   // A three-day window around it is "ovulatory".
 
-  function cycleToday(cycle, now = new Date()) {
-    if (!cycle || !cycle.lastStart) return null;
-    const start = dayFromKey(cycle.lastStart);
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const daysSince = Math.round((today - start) / DAY_MS);
-    if (daysSince < 0) return null;
+  function phaseOfDay(day, length, periodLength) {
+    const ovulationDay = length - 14;
+    if (day <= periodLength) return "menstrual";
+    if (day < ovulationDay - 1) return "follicular";
+    if (day <= ovulationDay + 1) return "ovulatory";
+    return "luteal";
+  }
 
+  // Your cycle day and phase on any date (today, or the day of an old
+  // entry). Uses the period start just before that date.
+  function cycleOn(cycle, when = new Date()) {
+    if (!cycle || !cycle.lastStart) return null;
+    const date = new Date(when.getFullYear(), when.getMonth(), when.getDate());
     const length = clamp(cycle.length, 20, 45);
     const periodLength = clamp(cycle.periodLength, 2, 10);
-    const day = (daysSince % length) + 1;
-    const ovulationDay = length - 14;
 
-    let phase;
-    if (day <= periodLength) phase = "menstrual";
-    else if (day < ovulationDay - 1) phase = "follicular";
-    else if (day <= ovulationDay + 1) phase = "ovulatory";
-    else phase = "luteal";
+    const starts = [...(cycle.history || []), cycle.lastStart].filter(Boolean).sort();
+    const before = starts.filter((key) => dayFromKey(key) <= date).pop();
+    // Before any date you've noted, count backwards from the earliest one.
+    const start = dayFromKey(before || starts[0]);
+    const daysSince = Math.round((date - start) / DAY_MS);
+    const day = (((daysSince % length) + length) % length) + 1;
 
-    // If more than a whole cycle has passed since the date you entered,
-    // this is a best guess until you note your next period.
-    return { day, phase, length, estimated: daysSince >= length };
+    // A best guess if it's more than a cycle past the start, or before it.
+    return { day, phase: phaseOfDay(day, length, periodLength), length, estimated: !before || daysSince >= length };
+  }
+
+  // Today's cycle day. Nothing if your last period date is in the future.
+  function cycleToday(cycle, now = new Date()) {
+    if (!cycle || !cycle.lastStart || dayFromKey(cycle.lastStart) > now) return null;
+    return cycleOn(cycle, now);
   }
 
   // ── Seasons ─────────────────────────────────────────
@@ -60,5 +70,5 @@ const MoonRhythms = (() => {
     return Math.abs(lat) < 23.5 ? "tropical" : "temperate";
   }
 
-  return { cycleToday, seasonFor, guessClimate };
+  return { cycleOn, cycleToday, seasonFor, guessClimate };
 })();

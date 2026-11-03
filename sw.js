@@ -4,12 +4,12 @@
   Keeps a copy of the app's own files on your phone so it opens offline.
   It never touches your diary entries.
 
-  When you change any file, bump the version number below (v7 → v8),
+  When you change any file, bump the version number below (v8 → v9),
   and APP_VERSION in js/app.js to match. That tells phones to fetch the
   fresh files.
 */
 
-const CACHE = "moon-diary-v7";
+const CACHE = "moon-diary-v8";
 
 const APP_FILES = [
   "./",
@@ -24,6 +24,7 @@ const APP_FILES = [
   "js/app.js",
   "js/settings-screen.js",
   "js/today-screen.js",
+  "js/garden.js",
   "content/prompts.js",
   "content/checkin.js",
   "content/rhythms.js",
