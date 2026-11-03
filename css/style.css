@@ -2,18 +2,32 @@
   Moon Diary — styles
   ====================
   All the colours live here at the top. Change one and it changes everywhere.
+
+  The lotus pond palette:
+    Dark green #0A3323 · Moss green #839958 · Beige #F7F4D5
+    Rosy brown #D3968C · Midnight green #105666
+  Moss and rosy are too light for words on beige, so they're used for
+  leaves, borders and glows only.
 */
 
 :root {
-  --cream:      #faf6ef;  /* the page */
-  --cream-deep: #f3ece0;  /* cards */
-  --sage-pale:  #e4eadf;
-  --sage:       #a9b8a0;
-  --sage-deep:  #6f8167;
-  --blush:      #f1d9d2;
-  --blush-deep: #d9a99c;
-  --ink:        #3f4a3c;  /* main text: a soft, deep green-grey, never black */
-  --ink-soft:   #7c8676;
+  /* The five palette colours */
+  --ink:        #0a3323;  /* dark green: main text */
+  --moss:       #839958;  /* moss green: leaves, underlines */
+  --beige:      #f7f4d5;  /* beige: the page */
+  --rosy:       #d3968c;  /* rosy brown: blooms, the moon, borders */
+  --midnight:   #105666;  /* midnight green: buttons, stems, small headings */
+
+  /* Softer shades made from them */
+  --beige-deep: #ebebc9;  /* cards: beige with a touch of moss */
+  --moss-pale:  #dde0ba;  /* the camera / voice switch, messages */
+  --rosy-pale:  #ebc4bc;  /* the Begin button */
+  --rosy-glow:  #f6e2dc;  /* the light catching the Begin button */
+  --ink-soft:   #3e5d4a;  /* quieter text: dates, hints */
+
+  /* The same colours written as numbers, for see-through glows and shadows */
+  --shadow-rgb: 10, 51, 35;    /* dark green */
+  --glow-rgb:   235, 196, 188; /* pale rosy */
 
   /* Iowan Old Style is a gentle serif built into iPhones and Macs,
      so the app never has to fetch a font from the internet. */
@@ -30,7 +44,7 @@ html, body {
 }
 
 body {
-  background: var(--cream);
+  background: var(--beige);
   color: var(--ink);
   font-family: var(--serif);
   font-size: 18px;
@@ -61,21 +75,21 @@ body {
 .sprig .stem,
 .sprig .vein {
   fill: none;
-  stroke: var(--sage-deep);
+  stroke: var(--midnight);
   stroke-width: 1.4;
   stroke-linecap: round;
   opacity: 0.55;
 }
 .sprig .vein { stroke-width: 0.8; opacity: 0.35; }
 .sprig .leaf {
-  fill: var(--sage);
+  fill: var(--moss);
   fill-opacity: 0.28;
-  stroke: var(--sage-deep);
+  stroke: var(--midnight);
   stroke-width: 1.1;
   stroke-linejoin: round;
   stroke-opacity: 0.5;
 }
-.sprig .bloom       { fill: var(--blush-deep); opacity: 0.55; }
+.sprig .bloom       { fill: var(--rosy); opacity: 0.55; }
 .sprig .bloom.soft  { opacity: 0.35; }
 
 /* ── Home layout ───────────────────────────────────────── */
@@ -99,7 +113,7 @@ body {
 .moon {
   width: 30px;
   height: 30px;
-  fill: var(--blush-deep);
+  fill: var(--rosy);
   opacity: 0.8;
   margin-bottom: 8px;
 }
@@ -124,12 +138,12 @@ h1 {
 /* ── The prompt card ───────────────────────────────────── */
 
 .prompt-card {
-  background: var(--cream-deep);
-  border: 1px solid var(--sage-pale);
+  background: var(--beige-deep);
+  border: 1px solid var(--moss-pale);
   border-radius: 28px;
   padding: 30px 26px 22px;
   text-align: center;
-  box-shadow: 0 10px 30px -18px rgba(111, 129, 103, 0.45);
+  box-shadow: 0 10px 30px -18px rgba(var(--shadow-rgb), 0.45);
 }
 
 .eyebrow {
@@ -137,7 +151,7 @@ h1 {
   font-size: 13px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--sage-deep);
+  color: var(--midnight);
 }
 
 .prompt-text {
@@ -157,7 +171,7 @@ h1 {
   font-style: italic;
   color: var(--ink-soft);
   text-decoration: underline;
-  text-decoration-color: var(--sage);
+  text-decoration-color: var(--moss);
   text-underline-offset: 4px;
   cursor: pointer;
 }
@@ -170,14 +184,14 @@ h1 {
   width: 132px;
   height: 132px;
   border-radius: 50%;
-  border: 1px solid var(--blush-deep);
-  background: radial-gradient(circle at 35% 30%, #fbeee9, var(--blush));
+  border: 1px solid var(--rosy);
+  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
   color: var(--ink);
   font: inherit;
   font-size: 21px;
   letter-spacing: 0.04em;
   cursor: pointer;
-  box-shadow: 0 0 0 10px rgba(241, 217, 210, 0.35);
+  box-shadow: 0 0 0 10px rgba(var(--glow-rgb), 0.55);
   transition: transform 600ms ease, box-shadow 600ms ease;
   animation: breathe 7s ease-in-out infinite;
 }
@@ -185,8 +199,8 @@ h1 {
 
 /* A slow "breathing" glow around the button: in for 3.5s, out for 3.5s */
 @keyframes breathe {
-  0%, 100% { box-shadow: 0 0 0 8px  rgba(241, 217, 210, 0.30); }
-  50%      { box-shadow: 0 0 0 18px rgba(241, 217, 210, 0.45); }
+  0%, 100% { box-shadow: 0 0 0 8px  rgba(var(--glow-rgb), 0.45); }
+  50%      { box-shadow: 0 0 0 18px rgba(var(--glow-rgb), 0.75); }
 }
 
 .whisper {
@@ -199,7 +213,7 @@ h1 {
 
 /* Visible focus ring for anyone using a keyboard */
 button:focus-visible {
-  outline: 2px solid var(--sage-deep);
+  outline: 2px solid var(--midnight);
   outline-offset: 4px;
 }
 
@@ -214,10 +228,10 @@ button:focus-visible {
   width: max-content;
   padding: 12px 20px;
   border-radius: 22px;
-  border: 1px solid var(--sage);
-  background: var(--sage-pale);
+  border: 1px solid var(--moss);
+  background: var(--moss-pale);
   color: var(--ink);
-  box-shadow: 0 10px 30px -16px rgba(111, 129, 103, 0.5);
+  box-shadow: 0 10px 30px -16px rgba(var(--shadow-rgb), 0.5);
   font-size: 15px;
   text-align: center;
   opacity: 0;
@@ -292,7 +306,7 @@ button:focus-visible {
   display: flex;
   padding: 4px;
   border-radius: 999px;
-  background: var(--sage-pale);
+  background: var(--moss-pale);
 }
 .mode-chip {
   border: none;
@@ -306,9 +320,9 @@ button:focus-visible {
   transition: background var(--slow) ease, color var(--slow) ease;
 }
 .mode-chip[aria-pressed="true"] {
-  background: var(--cream);
+  background: var(--beige);
   color: var(--ink);
-  box-shadow: 0 2px 8px -4px rgba(111, 129, 103, 0.6);
+  box-shadow: 0 2px 8px -4px rgba(var(--shadow-rgb), 0.6);
 }
 
 /* While recording, hide things you might bump by accident */
@@ -331,8 +345,8 @@ button:focus-visible {
   max-height: 56vh;
   border-radius: 28px;
   overflow: hidden;
-  background: var(--cream-deep);
-  border: 1px solid var(--sage-pale);
+  background: var(--beige-deep);
+  border: 1px solid var(--moss-pale);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -352,7 +366,7 @@ button:focus-visible {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fbeee9, var(--blush));
+  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
   animation: breathe 7s ease-in-out infinite;
 }
 .is-recording.mode-voice .voice-orb { animation-duration: 3.5s; }
@@ -376,8 +390,8 @@ button:focus-visible {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 1px solid var(--blush-deep);
-  background: radial-gradient(circle at 35% 30%, #fbeee9, var(--blush));
+  border: 1px solid var(--rosy);
+  background: radial-gradient(circle at 35% 30%, var(--rosy-glow), var(--rosy-pale));
   font: inherit;
   font-size: 17px;
   color: var(--ink);
@@ -396,7 +410,7 @@ button:focus-visible {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--blush-deep);
+  background: var(--rosy);
 }
 .is-recording .record-dot {
   border-radius: 3px;                       /* becomes a soft "stop" square */
@@ -415,7 +429,7 @@ button:focus-visible {
 
 /* ── Review ────────────────────────────────────────────── */
 
-.review-stage { background: var(--sage-pale); }
+.review-stage { background: var(--moss-pale); }
 .review-media { width: 100%; max-height: 100%; }
 .review-media[hidden] { display: none; }
 audio.review-media { width: calc(100% - 40px); }
@@ -431,9 +445,9 @@ audio.review-media { width: calc(100% - 40px); }
   min-width: 200px;
   padding: 15px 28px;
   border-radius: 999px;
-  border: 1px solid var(--sage-deep);
-  background: var(--sage-deep);
-  color: var(--cream);
+  border: 1px solid var(--midnight);
+  background: var(--midnight);
+  color: var(--beige);
   font: inherit;
   font-size: 18px;
   cursor: pointer;
@@ -453,8 +467,8 @@ audio.review-media { width: calc(100% - 40px); }
 }
 
 .entry {
-  background: var(--cream-deep);
-  border: 1px solid var(--sage-pale);
+  background: var(--beige-deep);
+  border: 1px solid var(--moss-pale);
   border-radius: 22px;
   padding: 16px 18px 10px;
 }

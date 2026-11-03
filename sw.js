@@ -8,7 +8,7 @@
   That tells phones to fetch the fresh files.
 */
 
-const CACHE = "moon-diary-v2";
+const CACHE = "moon-diary-v3";
 
 const APP_FILES = [
   "./",
